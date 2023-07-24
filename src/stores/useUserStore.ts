@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
 import type { userInfoInterface } from '@/interfaces/interfaces';
-import APIController from '@/services/api/API.communicate';
 
 export const useUserStore = defineStore(
   'userStore',
   () => {
     // state:
-    const loggedUser = ref({
+    const loggedUser = ref<any>({
       token: '' as String | null,
       userInfo: {} as userInfoInterface | null,
       login: false as Boolean | null,

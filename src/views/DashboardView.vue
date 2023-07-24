@@ -1,5 +1,4 @@
 <template>
-  123
   <div class="content">
     <h2>Καρτέλα Λογαρισμού</h2>
     <div class="splitLeft">

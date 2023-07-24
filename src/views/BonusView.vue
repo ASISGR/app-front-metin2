@@ -10,6 +10,7 @@
             :data-source="item_attr"
             bordered
             :pagination="false"
+            :scroll="{ x: true }"
           >
             <template #bodyCell="{ column, record }">
               <template
@@ -45,6 +46,7 @@
             :data-source="item_attr_rare"
             bordered
             :pagination="false"
+            :scroll="{ x: true }"
           >
             <template #bodyCell="{ column, record }">
               <template

@@ -1,5 +1,5 @@
 <template>
-  <a-row>
+  <a-row style="flex-wrap: wrap" :wrap="true">
     <a-col :span="12" style="padding: 10px">
       <Card title="ΚΑΛΩΣΉΡΘΑΤΕ ΣΤΟΝ REVENTON METIN2!">
         <template #content>

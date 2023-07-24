@@ -14,6 +14,7 @@
         :data-source="guilds"
         bordered
         :pagination="false"
+        :scroll="{ x: true }"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.title === 'Θέση'">

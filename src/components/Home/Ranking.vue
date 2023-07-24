@@ -1,5 +1,11 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered :pagination="false">
+  <a-table
+    :columns="columns"
+    :data-source="data"
+    bordered
+    :pagination="false"
+    :scroll="{ x: true }"
+  >
   </a-table>
 </template>
 <script lang="ts" setup>

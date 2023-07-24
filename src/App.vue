@@ -1,17 +1,19 @@
 <template>
-  <a-layout-header :style="headerStyle">
-    <Navbar></Navbar>
-  </a-layout-header>
-  <a-layout>
-    <a-layout-sider width="340" :style="siderStyle"
-      ><LoginSidebar></LoginSidebar>
-      <Statistics></Statistics>
-    </a-layout-sider>
-    <a-layout-content :style="contentStyle">
-      <Carousel></Carousel> <RouterView
-    /></a-layout-content>
+  <a-layout style="min-width: 1080px">
+    <a-layout-header :style="headerStyle">
+      <Navbar></Navbar>
+    </a-layout-header>
+    <a-layout>
+      <a-layout-sider width="340" :style="siderStyle"
+        ><LoginSidebar></LoginSidebar>
+        <Statistics></Statistics>
+      </a-layout-sider>
+      <a-layout-content :style="contentStyle">
+        <Carousel></Carousel> <RouterView
+      /></a-layout-content>
+    </a-layout>
+    <a-layout-footer :style="footerStyle"><Footer></Footer></a-layout-footer>
   </a-layout>
-  <a-layout-footer :style="footerStyle"><Footer></Footer></a-layout-footer>
 </template>
 
 <script lang="ts" setup>

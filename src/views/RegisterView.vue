@@ -51,6 +51,7 @@
               message: 'Username must be at least 5 characters long',
             },
             { max: 16, message: 'Username cannot exceed 16 characters' },
+            { trigger: 'change', validator: usernameExistValidation },
           ]"
         >
           <a-input v-model:value.trim="formState.login">
@@ -150,6 +151,7 @@
               message: 'Email must be at least 10 characters long',
             },
             { max: 50, message: 'Email cannot exceed 50 characters' },
+            { trigger: 'change', validator: emailExistValidation },
           ]"
         >
           <a-input v-model:value.trim="formState.email">
@@ -352,8 +354,39 @@ const emailRepeatValidation = (rule: any, value: string) => {
   if (value !== formState.email) {
     return Promise.reject("Email and Repeat Email don't match");
   }
+
   return Promise.resolve();
 };
+
+async function usernameExistValidation(rule: any, value: string) {
+  return APIController.sendRequest('validation', 'POST', { login: value })
+    .then((res: any) => {
+      if (res.status === 200) {
+        return Promise.resolve();
+      }
+    })
+    .catch((response: any) => {
+      if (response.status !== 200) {
+        console.log(response.data.message);
+
+        return Promise.reject(response.data.message);
+      }
+    });
+}
+
+async function emailExistValidation(rule: any, value: string) {
+  APIController.sendRequest('validation', 'POST', { email: value }).catch(
+    (response: any) => {
+      if (response.status !== 200) {
+        console.log(response.data.message);
+
+        return Promise.reject(response.data.message);
+      }
+    }
+  );
+  return Promise.resolve();
+}
+
 const passwordRepeatValidation = (rule: any, value: string) => {
   if (value !== formState.password) {
     return Promise.reject("Password and Repeat Password don't match");

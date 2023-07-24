@@ -146,7 +146,7 @@ onMounted(async () => {
       .catch((err) => {
         console.log(err);
       });
-  }, 1000);
+  }, 10000);
 });
 </script>
 
