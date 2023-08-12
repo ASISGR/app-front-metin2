@@ -62,7 +62,7 @@
           :labelStyle="{ fontWeight: 'bold' }"
         >
           <img
-            v-if="userStore.getUser && userStore.getUser.empire"
+            v-if="userStore.getUser"
             :src="
               userStore.getUser.empire === 1
                 ? redFlag
