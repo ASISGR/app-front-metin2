@@ -95,12 +95,12 @@
       >
         <a-sub-menu key="sub1">
           <template #title>
-            <span>
+            <span v-if="userStore.getUser">
               <user-outlined />
-              Χρήστης: {{ userStore.getUser?.login }}
+              Χρήστης: {{ userStore.getUser.login }}
             </span>
           </template>
-          <a-menu-item key="1" v-if="userStore.getUser.isAdmin"
+          <a-menu-item key="1" v-if="userStore.getUser && userStore.getUser.isAdmin"
             >Administrator</a-menu-item
           >
 
@@ -164,7 +164,7 @@ const onFinish = (values: any) => {
     .then((response: any) => {
       console.log(userStore.loggedUser);
       console.log(response);
-      userStore.loggedUser.token = response.token;
+      userStore.loggedUser.token = response.access_token;
       userStore.loggedUser.userInfo = response.accountInfo;
       userStore.loggedUser.login = true;
     })

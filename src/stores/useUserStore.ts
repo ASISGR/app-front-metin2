@@ -1,15 +1,15 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import type { userInfoInterface } from '@/interfaces/interfaces';
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
+import type { userInfoInterface } from "@/interfaces/interfaces";
 
 export const useUserStore = defineStore(
-  'userStore',
+  "userStore",
   () => {
     // state:
-    const loggedUser = ref<any>({
-      token: '' as String | null,
-      userInfo: {} as userInfoInterface | null,
-      login: false as Boolean | null,
+    const loggedUser = ref<userInfoInterface>({
+      token: "",
+      userInfo: null,
+      login: false,
     });
 
     // Getters:
@@ -21,22 +21,9 @@ export const useUserStore = defineStore(
 
     // Functions
     function clearLoggedUser() {
-      loggedUser.value.token = '';
+      loggedUser.value.token = "";
       loggedUser.value.login = false;
-      loggedUser.value.userInfo = {
-        userId: '',
-        login: '',
-        email: '',
-        coins: '',
-        jcoins: '',
-        last_play: '',
-        account_status: '',
-        social_id: '',
-        players: [],
-        empire: '',
-        safebox_password: '',
-        isAdmin: false,
-      };
+      loggedUser.value.userInfo = null;
     }
     // Return the useable methods.
     return {

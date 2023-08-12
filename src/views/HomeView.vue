@@ -62,8 +62,8 @@ const activeKey = ref('1');
 
 const charTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'name', dataIndex: 'name' },
-  { title: 'Επίπεδο', key: 'level', dataIndex: 'level' },
+  { title: 'Όνομα', key: 'player_name', dataIndex: 'player_name' },
+  { title: 'Επίπεδο', key: 'player_level', dataIndex: 'player_level' },
   {
     title: 'Αποστολές',
     key: 'highest_collect_quest_lv',
@@ -73,46 +73,49 @@ const charTableColumns = ref([
 
 const guildTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'name', dataIndex: 'name' },
-  { title: 'Επίπεδο', key: 'level', dataIndex: 'level' },
-  { title: 'Πόντοι', key: 'ladder_point', dataIndex: 'ladder_point' },
+  { title: 'Όνομα', key: 'guild_name', dataIndex: 'guild_name' },
+  { title: 'Επίπεδο', key: 'guild_level', dataIndex: 'guild_level' },
+  { title: 'Πόντοι', key: 'guild_ladder_point', dataIndex: 'guild_ladder_point' },
 ]);
 
-const characters = ref([]);
-const guilds: any = ref([]);
+interface top10PlayersInterface {
+  player_name: string;
+  player_playtime: string;
+  player_level: number,
+  player_exp: string,
+  player_horse_level :number,
+  playerIndex_empire: number,
+  playerGuild_name: null | string,
+  highest_collect_quest_lv: null|string,
+  index: number
+
+}
+
+interface top10GuildsInterface {
+  guild_name: string;
+  
+  guild_level: number,
+  player_exp: string,
+  guild_ladder_point :string,
+  playerLeader_name: string,
+  playerIndex_empire: number,
+  index: number
+
+}
+
+const characters = ref<top10PlayersInterface[]>([]);
+const guilds = ref<top10GuildsInterface[]>([]);
+
 
 onMounted(() => {
-  API.sendRequest('ranking-players-5', 'GET')
+  API.sendRequest('top10Ranks', 'GET')
     .then((response: any) => {
-      let index = 1;
-      response.forEach((element: any) => {
-        element.index = index++;
-        if (element.guild_name === null) {
-          element.guild_name = '-';
-        }
-        if (element.highest_collect_quest_lv === null) {
-          element.highest_collect_quest_lv = '-';
-        }
-      });
-      characters.value = response;
+      characters.value = response.top10Players;
+      guilds.value = response.top10Guilds;
     })
     .catch((err) => {
       console.log(`Error API ${err}`);
     });
 
-  API.sendRequest('ranking-guilds-5', 'GET')
-
-    .then((response: any) => {
-      let index = 1;
-
-      response.forEach((element: any) => {
-        element.index = index++;
-      });
-
-      guilds.value = response;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 });
 </script>

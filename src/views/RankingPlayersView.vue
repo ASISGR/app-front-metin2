@@ -22,21 +22,21 @@
               {{ (paginationData?.currentPage - 1) * 50 + record.index }}
             </a>
           </template>
-
           <template v-if="column.title === 'Βασίλειο'">
             <a>
+              
               <img
                 :src="
-                  record.empire === 1
+                  record.playerIndex_empire === 1
                     ? redFlag
-                    : record.empire === 2
+                    : record.playerIndex_empire === 2
                     ? yellowFlag
-                    : record.empire === 3
+                    : record.playerIndex_empire === 3
                     ? blueFlag
                     : ''
                 "
                 title="Βασίλειο"
-                alt="Reich"
+                alt="Kingdom"
               />
             </a>
           </template>
@@ -70,24 +70,24 @@ const paginationData = ref<any>(null);
 const page = ref(route.currentRoute.value.params.index);
 const characterTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'name', dataIndex: 'name' },
-  { title: 'Επίπεδο', key: 'level', dataIndex: 'level' },
+  { title: 'Όνομα', key: 'player_name', dataIndex: 'player_name' },
+  { title: 'Επίπεδο', key: 'player_level', dataIndex: 'player_level' },
   {
     title: 'Αποστολές',
     key: 'highest_collect_quest_lv',
     dataIndex: 'highest_collect_quest_lv',
   },
-  { title: 'Συντεχνία', key: 'guild_name', dataIndex: 'guild_name' },
-  { title: 'Χρόνος παιχνιδιού', key: 'playtime', dataIndex: 'playtime' },
-  { title: 'EXP', key: 'exp', dataIndex: 'exp' },
-  { title: 'Βασίλειο', key: 'empire', dataIndex: 'empire' },
+  { title: 'Συντεχνία', key: 'playerGuild_name', dataIndex: 'playerGuild_name' },
+  { title: 'Χρόνος παιχνιδιού', key: 'player_playtime', dataIndex: 'player_playtime' },
+  { title: 'EXP', key: 'player_exp', dataIndex: 'player_exp' },
+  { title: 'Βασίλειο', key: 'playerIndex_empire', dataIndex: 'playerIndex_empire' },
 ]);
 
 onMounted(() => {
   // Output value to console
 
   API.sendRequest(
-    `ranking-players/${route.currentRoute.value.params.index}`,
+    `topListPlayers/${route.currentRoute.value.params.index}`,
     'GET'
   )
     .then((response: any) => {
@@ -118,7 +118,7 @@ watchEffect(() => {
 
     history.pushState(null, '', url);
 
-    API.sendRequest(`ranking-players/${page.value}`, 'GET')
+    API.sendRequest(`topListPlayers/${page.value}`, 'GET')
       .then((response: any) => {
         players.value = response.players;
 

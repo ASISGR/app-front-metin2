@@ -27,11 +27,11 @@
             <a>
               <img
                 :src="
-                  record.empire === 1
+                  record.playerIndex_empire === 1
                     ? redFlag
-                    : record.empire === 2
+                    : record.playerIndex_empire === 2
                     ? yellowFlag
-                    : record.empire === 3
+                    : record.playerIndex_empire === 3
                     ? blueFlag
                     : ''
                 "
@@ -70,26 +70,27 @@ const page = ref(route.currentRoute.value.params.index);
 
 const guildTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Συντεχνία', key: 'name', dataIndex: 'name' },
-  { title: 'Ηγέτης', key: 'guild_leader', dataIndex: 'guild_leader' },
+  { title: 'Συντεχνία', key: 'guild_name', dataIndex: 'guild_name' },
+  { title: 'Ηγέτης', key: 'playerLeader_name', dataIndex: 'playerLeader_name' },
   {
     title: 'Επίπεδο',
-    key: 'level',
-    dataIndex: 'level',
+    key: 'guild_level',
+    dataIndex: 'guild_level',
   },
-  { title: 'Νίκες', key: 'win', dataIndex: 'win' },
-  { title: 'Ισοπαλίες', key: 'draw', dataIndex: 'draw' },
-  { title: 'Ήττες', key: 'loss', dataIndex: 'loss' },
-  { title: 'Πόντοι', key: 'ladder_point', dataIndex: 'ladder_point' },
-  { title: 'Βασίλειο', key: 'empire', dataIndex: 'empire' },
+  { title: 'Νίκες', key: 'guild_win', dataIndex: 'guild_win' },
+  { title: 'Ισοπαλίες', key: 'guild_draw', dataIndex: 'guild_draw' },
+  { title: 'Ήττες', key: 'guild_loss', dataIndex: 'guild_loss' },
+  { title: 'Πόντοι', key: 'guild_ladder_point', dataIndex: 'guild_ladder_point' },
+  { title: 'Βασίλειο', key: 'playerIndex_empire', dataIndex: 'playerIndex_empire' },
 ]);
 
 onMounted(() => {
   API.sendRequest(
-    `ranking-guilds/${route.currentRoute.value.params.index}`,
+    `topListGuilds/${route.currentRoute.value.params.index}`,
     'GET'
   )
     .then((response: any) => {
+      console.log(response.guilds)
       guilds.value = response.guilds;
 
       const fillPagination = {
@@ -116,7 +117,7 @@ watchEffect(() => {
 
     history.pushState(null, '', url);
 
-    API.sendRequest(`ranking-guilds/${page.value}`, 'GET')
+    API.sendRequest(`topListGuilds/${page.value}`, 'GET')
       .then((response: any) => {
         guilds.value = response.guilds;
 

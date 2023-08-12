@@ -56,7 +56,7 @@ const labelCol = { span: 4 };
 const wrapperCol = { span: 14 };
 
 const formState = reactive({
-  characters: userStore.getUser.players,
+  characters: userStore.getUser ? userStore.getUser.players : null,
   selectedCharacter: undefined,
 });
 
@@ -64,12 +64,13 @@ const onFinish = (values: any) => {
   // map 1 SHINSOO
   // map 2 CHUNJO
   // map 3 JINNO
-  const empire =
+  const empire = userStore.getUser &&
     userStore.getUser.empire === 1
       ? 'SHINSOO'
-      : userStore.getUser.empire === 2
+      : userStore.getUser && userStore.getUser.empire === 2
       ? 'CHUNJO'
-      : userStore.getUser.empire === 3
+      :  userStore.getUser && 
+      userStore.getUser.empire === 3
       ? 'JINNO'
       : '';
 

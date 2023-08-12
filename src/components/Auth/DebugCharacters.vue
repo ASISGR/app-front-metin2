@@ -64,7 +64,7 @@ const labelCol = { span: 4 };
 const wrapperCol = { span: 14 };
 
 const formState = reactive({
-  characters: userStore.getUser.players,
+  characters: userStore.getUser?.players,
   selectedCharacter: undefined,
 });
 
@@ -75,14 +75,7 @@ const onFinish = (values: any) => {
   // map 1 SHINSOO
   // map 2 CHUNJO
   // map 3 JINNO
-  const empire =
-    userStore.getUser.empire === 1
-      ? 'SHINSOO'
-      : userStore.getUser.empire === 2
-      ? 'CHUNJO'
-      : userStore.getUser.empire === 3
-      ? 'JINNO'
-      : '';
+  const empire = userStore.getUser?.empire;
 
   APIController.sendRequest('debug-character', 'POST', {
     playerName: values.selectedCharacter,
@@ -102,6 +95,7 @@ onMounted(() => {
     route.push('/');
   }
 });
+
 </script>
 <style scoped>
 .error-message {
