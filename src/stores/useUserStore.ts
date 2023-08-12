@@ -35,6 +35,7 @@ export const useUserStore = defineStore(
         players: [],
         empire: '',
         safebox_password: '',
+        isAdmin: false,
       };
     }
     // Return the useable methods.

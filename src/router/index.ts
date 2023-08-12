@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import DashboardView from '@/views/DashboardView.vue';
-import AccountDataHandle from '@/views/AccountDataHandleView.vue';
+import HomeView from '@/views/HomeView.vue';
+import DashboardView from '@/components/Auth/DashboardView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import NewsView from '@/views/NewsView.vue';
 import BonusView from '@/views/BonusView.vue';
@@ -10,6 +9,8 @@ import RankingPlayersView from '@/views/RankingPlayersView.vue';
 import RankingGuildsView from '@/views/RankingGuildsView.vue';
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue';
 import CredentialsManageView from '@/views/CredentialsManageView.vue';
+import DebugCharacters from '@/components/Auth/DebugCharacters.vue';
+import AccountDataHandle from '@/components/Auth/ChangeCredentialsView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -69,6 +70,11 @@ const router = createRouter({
       path: '/account-manage',
       name: 'credentials-manage',
       component: CredentialsManageView,
+    },
+    {
+      path: '/debug-characters',
+      name: 'debug',
+      component: DebugCharacters,
     },
   ],
 });

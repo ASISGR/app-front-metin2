@@ -100,14 +100,24 @@
               Χρήστης: {{ userStore.getUser?.login }}
             </span>
           </template>
-          <a-menu-item key="1">Administrator</a-menu-item>
+          <a-menu-item key="1" v-if="userStore.getUser.isAdmin"
+            >Administrator</a-menu-item
+          >
 
           <a-menu-item key="2"
             ><router-link to="/dashboard">Προφίλ</router-link></a-menu-item
           >
           <a-menu-item key="3">Itemshop</a-menu-item>
-          <a-menu-item key="4">Χαρακτήρες</a-menu-item>
-          <a-menu-item key="5">Αλλαγή στοιχείων λογαριασμού</a-menu-item>
+          <a-menu-item key="4"
+            ><router-link to="/debug-characters"
+              >Χαρακτήρες</router-link
+            ></a-menu-item
+          >
+          <a-menu-item key="5"
+            ><router-link to="/account-handeling"
+              >Αλλαγή στοιχείων λογαριασμού</router-link
+            ></a-menu-item
+          >
           <a-menu-item key="6">Κοίτα τα δώρα σου</a-menu-item>
           <a-menu-item @click="logout()" key="7">Αποσύνδεση</a-menu-item>
         </a-sub-menu>

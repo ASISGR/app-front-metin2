@@ -11,6 +11,7 @@ export interface userInfoInterface {
   players: [string];
   empire: string;
   safebox_password: string;
+  isAdmin: boolean;
 }
 
 export interface Kingdoms {

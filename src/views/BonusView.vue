@@ -88,15 +88,15 @@ import Card from '@/components/General/Card.vue';
 const activeKey = ref('1');
 
 const normalBonusTableColumns = ref([
-  { title: 'Bonus', key: 'apply', dataIndex: 'apply', responsive: ['md'] },
-  { title: 'Όπλο', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Πανοπλία', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Βραχιόλι', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Παπούτσια', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Περιδέραιο', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Κράνος', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Ασπίδα', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
-  { title: 'Σκουλαρίκια', key: 'lv5', dataIndex: 'lv5', responsive: ['md'] },
+  { title: 'Bonus', key: 'apply', dataIndex: 'apply' },
+  { title: 'Όπλο', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Πανοπλία', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Βραχιόλι', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Παπούτσια', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Περιδέραιο', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Κράνος', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Ασπίδα', key: 'lv5', dataIndex: 'lv5' },
+  { title: 'Σκουλαρίκια', key: 'lv5', dataIndex: 'lv5' },
 ]);
 const especiallyBonusTableColumns = ref([
   { title: 'Bonus', key: 'lv5', dataIndex: 'apply' },

@@ -1,10 +1,16 @@
 <template>
-  <a-layout style="min-width: 1080px">
+  <a-layout>
     <a-layout-header :style="headerStyle">
       <Navbar></Navbar>
     </a-layout-header>
-    <a-layout>
-      <a-layout-sider width="340" :style="siderStyle"
+    <a-layout has-sider>
+      <a-layout-sider
+        width="340"
+        :style="siderStyle"
+        breakpoint="lg"
+        collapsed-width="0"
+        @collapse="onCollapse"
+        @breakpoint="onBreakpoint"
         ><LoginSidebar></LoginSidebar>
         <Statistics></Statistics>
       </a-layout-sider>
@@ -59,6 +65,14 @@ const footerStyle: CSSProperties = {
   textAlign: 'center',
   color: '#fff',
   backgroundColor: 'rgb(0, 21, 41)',
+};
+
+const onCollapse = (collapsed: boolean, type: string) => {
+  console.log(collapsed, type);
+};
+
+const onBreakpoint = (broken: boolean) => {
+  console.log(broken);
 };
 
 onMounted(() => {

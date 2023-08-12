@@ -69,14 +69,45 @@ import { reactive, ref, onMounted } from 'vue';
 
 import Card from '@/components/General/Card.vue';
 import { UserOutlined, MailOutlined } from '@ant-design/icons-vue';
+import APIController from '@/services/api/API.communicate';
+import { message } from 'ant-design-vue';
+
 const formState = reactive({
   login: '',
   email: '',
 });
 
-const onFinish = (values: any) => {};
+const onFinish = (values: any) => {
+  APIController.sendRequest('apply-reset-password', 'POST', {
+    login: values.login,
+    email: values.email,
+  })
+    .then((res: any) => {
+      console.log(res);
+      message.success(res.message);
+    })
+    .catch((err) => {
+      message.error(err.data.message);
+    });
+};
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
 };
+
+onMounted(() => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const hash = urlParams.get('rhash');
+
+  if (hash) {
+    APIController.sendRequest('reset-password', 'POST', { hash: hash })
+      .then((res: any) => {
+        message.success(res.message);
+      })
+      .catch((err: any) => {
+        message.error(err.data.message);
+      });
+  }
+});
 </script>

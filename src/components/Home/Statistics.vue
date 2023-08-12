@@ -82,71 +82,37 @@ const countOfItems = ref<any>('0');
 const countOfGuilds = ref<any>('0');
 
 onMounted(async () => {
+  API.sendRequest('statistics', 'GET')
+    .then((response: any) => {
+      playersOnline.value = response.playersOnline[0].count;
+      playersOnline24Hours.value = response.players24Online[0].count;
+      accounts.value = response.accountsCount[0];
+      accountsPerKingdom.value = response.accountsPerKingdom[0];
+      sumOfGold.value = response.Gold[0];
+      countOfItems.value = response.itemsCounts[0];
+      countOfGuilds.value = response.guildsCount[0];
+      playersCount.value = response.countPlayers[0];
+    })
+    .catch((err) => {
+      console.log(`Error API ${err}`);
+    });
   // Request every Second to update realtime the Statistics.
   setInterval(() => {
-    API.sendRequest('players-online', 'GET')
+    API.sendRequest('statistics', 'GET')
       .then((response: any) => {
         playersOnline.value = response.playersOnline[0].count;
+        playersOnline24Hours.value = response.players24Online[0].count;
+        accounts.value = response.accountsCount[0];
+        accountsPerKingdom.value = response.accountsPerKingdom[0];
+        sumOfGold.value = response.Gold[0];
+        countOfItems.value = response.itemsCounts[0];
+        countOfGuilds.value = response.guildsCount[0];
+        playersCount.value = response.countPlayers[0];
       })
       .catch((err) => {
         console.log(`Error API ${err}`);
       });
-
-    API.sendRequest('players-online-24-hours', 'GET')
-      .then((response: any) => {
-        playersOnline24Hours.value = response.playersOnline[0].count;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    API.sendRequest('accounts', 'GET')
-      .then((response: any) => {
-        accounts.value = response.accountsCount[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    API.sendRequest('accounts-kingdoms', 'GET')
-      .then((response: any) => {
-        accountsPerKingdom.value = response.accountsPerKingdom[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    API.sendRequest('getSumGold', 'GET')
-      .then((response: any) => {
-        sumOfGold.value = response.Gold[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    API.sendRequest('getItemsCount', 'GET')
-      .then((response: any) => {
-        countOfItems.value = response.itemsCounts[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    API.sendRequest('getGuildsCount', 'GET')
-      .then((response: any) => {
-        countOfGuilds.value = response.guildsCount[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    API.sendRequest('getPlayersCount', 'GET')
-      .then((response: any) => {
-        playersCount.value = response.countPlayers[0];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, 10000);
+  }, 5000);
 });
 </script>
 

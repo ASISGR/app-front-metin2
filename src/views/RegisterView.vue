@@ -375,16 +375,19 @@ async function usernameExistValidation(rule: any, value: string) {
 }
 
 async function emailExistValidation(rule: any, value: string) {
-  APIController.sendRequest('validation', 'POST', { email: value }).catch(
-    (response: any) => {
+  return APIController.sendRequest('validation', 'POST', { email: value })
+    .then((res: any) => {
+      if (res.status === 200) {
+        return Promise.resolve();
+      }
+    })
+    .catch((response: any) => {
       if (response.status !== 200) {
         console.log(response.data.message);
 
         return Promise.reject(response.data.message);
       }
-    }
-  );
-  return Promise.resolve();
+    });
 }
 
 const passwordRepeatValidation = (rule: any, value: string) => {
