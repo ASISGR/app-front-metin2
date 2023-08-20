@@ -1,12 +1,12 @@
-import axios from 'axios';
-import { useUserStore } from '@/stores/useUserStore';
+import axios from "axios";
+import { useUserStore } from "@/stores/useUserStore";
 
 const url = import.meta.env.VITE_API_URL;
 
 export default class APIController {
   static sendRequest(
     endPoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
     data?: any
   ) {
     const userStore = useUserStore();
@@ -14,9 +14,9 @@ export default class APIController {
     return new Promise((resolve, reject) => {
       axios(`${url + endPoint}`, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${userStore.loggedUser.token}`,
-          token: 'eW91aGF2ZW5vYW3NjZXNz',
+          token: "eW91aGF2ZW5vYW3NjZXNz",
         },
         method: method,
         data: data,

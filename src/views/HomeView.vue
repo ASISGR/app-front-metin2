@@ -58,6 +58,8 @@ import Ranking from '@/components/Home/Ranking.vue';
 import API from '@/services/api/API.communicate';
 import { onMounted, ref } from 'vue';
 import Card from '@/components/General/Card.vue';
+
+
 const activeKey = ref('1');
 
 const charTableColumns = ref([
@@ -116,6 +118,5 @@ onMounted(() => {
     .catch((err) => {
       console.log(`Error API ${err}`);
     });
-
 });
 </script>

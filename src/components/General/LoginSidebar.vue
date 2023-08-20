@@ -8,16 +8,14 @@
           message="Αποτυχία σύνδεσης."
           :description="errorMessage"
           type="error"
-          show-icon
-        />
+          show-icon />
       </a-space>
       <a-form
         :model="formState"
         name="normal_login"
         class="login-form"
         @finish="onFinish"
-        @finishFailed="onFinishFailed"
-      >
+        @finishFailed="onFinishFailed">
         <a-form-item
           label="Username"
           name="username"
@@ -28,8 +26,7 @@
               message:
                 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
             },
-          ]"
-        >
+          ]">
           <a-input v-model:value.trim="formState.username">
             <template #prefix>
               <UserOutlined class="site-form-item-icon" />
@@ -47,8 +44,7 @@
               message:
                 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
             },
-          ]"
-        >
+          ]">
           <a-input-password v-model:value.trim="formState.password">
             <template #prefix>
               <LockOutlined class="site-form-item-icon" />
@@ -57,11 +53,6 @@
         </a-form-item>
 
         <a-form-item>
-          <a-form-item name="remember" no-style>
-            <a-checkbox v-model:checked="formState.remember"
-              >Να με θυμάσαι</a-checkbox
-            >
-          </a-form-item>
           <a class="login-form-forgot"
             ><router-link to="/forgot-password"
               >Ξέχασα τον κωδικό</router-link
@@ -74,8 +65,7 @@
             :disabled="disabled"
             type="primary"
             html-type="submit"
-            class="login-form-button"
-          >
+            class="login-form-button">
             Σύνδεση
           </a-button>
           Η
@@ -91,8 +81,7 @@
         v-model:selectedKeys="selectedKeys1"
         v-model:openKeys="openKeys"
         mode="inline"
-        :style="{ height: '100%', borderRight: 0 }"
-      >
+        :style="{ height: '100%', borderRight: 0 }">
         <a-sub-menu key="sub1">
           <template #title>
             <span v-if="userStore.getUser">
@@ -100,14 +89,16 @@
               Χρήστης: {{ userStore.getUser.login }}
             </span>
           </template>
-          <a-menu-item key="1" v-if="userStore.getUser && userStore.getUser.isAdmin"
-            >Administrator</a-menu-item
+          <a-menu-item
+            key="1"
+            v-if="userStore.getUser && userStore.getUser.isAdmin"
+            ><router-link to="/admin-panel">Administrator</router-link></a-menu-item
           >
 
           <a-menu-item key="2"
             ><router-link to="/dashboard">Προφίλ</router-link></a-menu-item
           >
-          <a-menu-item key="3">Itemshop</a-menu-item>
+          <a-menu-item @click="showModal" key="3">Itemshop</a-menu-item>
           <a-menu-item key="4"
             ><router-link to="/debug-characters"
               >Χαρακτήρες</router-link
@@ -124,78 +115,132 @@
       </a-menu>
     </template>
   </Card>
+
+  <a-modal
+    v-model:open="open"
+    title="Reventon Shop"
+    width="auto"
+    @ok="handleOk">
+    <iframe
+      style="
+         {
+          margin: 0;
+          height: calc(100vh - 4px);
+          width: calc(100vw - 4px);
+          box-sizing: border-box;
+        }
+      "
+      data-tf-redirect-target="”_self”"
+      frameborder="0"
+      allowfullscreen
+      src="https://reventon.gr/itemshop/"></iframe>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, h } from 'vue';
-import { useUserStore } from '@/stores/useUserStore';
-import { useRouter } from 'vue-router';
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
-import Card from './Card.vue';
-import APIController from '@/services/api/API.communicate';
+  import { computed, reactive, ref } from "vue";
+  import { useUserStore } from "@/stores/useUserStore";
+  import { useRouter } from "vue-router";
+  import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
+  import Card from "./Card.vue";
+  import APIController from "@/services/api/API.communicate";
+  import { message } from "ant-design-vue";
 
-const selectedKeys1 = ref<string[]>(['1']);
-const openKeys = ref<string[]>(['sub1']);
+  declare const grecaptcha: any;
 
-const showError = ref(false);
-const errorMessage = ref('');
+  const open = ref<boolean>(false);
 
-const router = useRouter();
-const userStore = useUserStore();
+  const selectedKeys1 = ref<string[]>(["1"]);
+  const openKeys = ref<string[]>(["sub1"]);
 
-interface FormState {
-  username: string;
-  password: string;
-  remember: boolean;
-}
-const formState = reactive<FormState>({
-  username: '',
-  password: '',
-  remember: true,
-});
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-  // Clean error template every time login is pressed.
-  showError.value = false;
-  return APIController.sendRequest('login', 'POST', {
-    login: formState.username,
-    password: formState.password,
-  })
-    .then((response: any) => {
+  const showError = ref(false);
+  const errorMessage = ref("");
+
+  const router = useRouter();
+  const userStore = useUserStore();
+
+  interface FormState {
+    username: string;
+    password: string;
+    remember: boolean;
+  }
+  const formState = reactive<FormState>({
+    username: "",
+    password: "",
+    remember: true,
+  });
+  const onFinish = async (values: any) => {
+    console.log("Success:", values);
+
+    // Recaptcha validation start.
+      const token = await grecaptcha
+          .execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {
+            action: "login",
+          });
+
+          console.log(token)
+
+
+      try {
+        await APIController.sendRequest('verifyRecaptcha','POST', {
+        secret: import.meta.env.VITE_RECAPTCHA_SECRET_KEY,
+        response:token,
+      })
+      } catch (error) {
+        message.error(error.data.message)
+        return false
+      }
+    // Recaptcha validation end.
+    // Clean error template every time login is pressed.
+
+    showError.value = false;
+    try {
+      const login: any = await APIController.sendRequest("login", "POST", {
+        login: formState.username,
+        password: formState.password,
+      });
       console.log(userStore.loggedUser);
-      console.log(response);
-      userStore.loggedUser.token = response.access_token;
-      userStore.loggedUser.userInfo = response.accountInfo;
+      console.log(login);
+      userStore.loggedUser.token = login.access_token;
+      userStore.loggedUser.userInfo = login.accountInfo;
       userStore.loggedUser.login = true;
-    })
-    .catch((err) => {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       showError.value = true;
-      errorMessage.value = err.data.message;
-    });
-};
+      message.error(error.data.message);
+    }
+  };
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo);
-};
-const disabled = computed(() => {
-  return !(formState.username && formState.password);
-});
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+  const disabled = computed(() => {
+    return !(formState.username && formState.password);
+  });
 
-function logout() {
-  userStore.clearLoggedUser();
-  router.push('/');
-}
+  const showModal = () => {
+    open.value = true;
+  };
+
+  const handleOk = (e: MouseEvent) => {
+    console.log(e);
+    open.value = false;
+  };
+
+  function logout() {
+    userStore.clearLoggedUser();
+    router.push("/");
+  }
 </script>
 
 <style scoped>
-#components-form-demo-normal-login .login-form {
-  max-width: 300px;
-}
-#components-form-demo-normal-login .login-form-forgot {
-  float: right;
-}
-#components-form-demo-normal-login .login-form-button {
-  width: 100%;
-}
+  #components-form-demo-normal-login .login-form {
+    max-width: 300px;
+  }
+  #components-form-demo-normal-login .login-form-forgot {
+    float: right;
+  }
+  #components-form-demo-normal-login .login-form-button {
+    width: 100%;
+  }
 </style>

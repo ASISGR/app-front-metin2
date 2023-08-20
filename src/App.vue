@@ -33,6 +33,14 @@ import Statistics from './components/Home/Statistics.vue';
 import { onMounted } from 'vue';
 import APIController from '@/services/api/API.communicate';
 import { message } from 'ant-design-vue';
+import { useGeneralStore } from '@/stores/useGeneralStore';
+import { useI18n } from 'vue-i18n';
+const { t, locale } = useI18n()
+
+const generalStore = useGeneralStore();
+
+
+
 
 const headerStyle: CSSProperties = {
   textAlign: 'center',
@@ -90,5 +98,9 @@ onMounted(() => {
         message.error(err.data.message);
       });
   }
+
+  // Set lang by lang from localStorage. If does not exists it's gr.
+  locale.value = generalStore.getLang ? generalStore.getLang : 'gr'
+
 });
 </script>

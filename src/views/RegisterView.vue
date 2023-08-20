@@ -288,15 +288,9 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
 import Card from '@/components/General/Card.vue';
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  SecurityScanOutlined,
-  SafetyOutlined,
-} from '@ant-design/icons-vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
+import { UserOutlined, LockOutlined , MailOutlined, SecurityScanOutlined, SafetyOutlined} from "@ant-design/icons-vue";
 
 const userStore = useUserStore();
 const layout = {
@@ -404,4 +398,5 @@ onMounted(() => {
     })
     .catch((err) => console.log(err));
 });
+
 </script>

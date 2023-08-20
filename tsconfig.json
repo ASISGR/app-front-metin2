@@ -7,5 +7,9 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  "lib": ["webWorker"],
+  "compilerOptions": {
+    "types": ["vue-i18n"]
+  }
 }

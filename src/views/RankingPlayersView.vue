@@ -67,7 +67,7 @@ import { useRouter } from 'vue-router';
 const route = useRouter();
 const players = ref([]);
 const paginationData = ref<any>(null);
-const page = ref(route.currentRoute.value.params.index);
+const page = ref<any>(route.currentRoute.value.params.index);
 const characterTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
   { title: 'Όνομα', key: 'player_name', dataIndex: 'player_name' },
@@ -112,6 +112,7 @@ onMounted(() => {
 watchEffect(() => {
   // Κάθε φορά που αλλάζει το paginationIndex
   if (page.value) {
+    page.value = parseInt(page.value)
     const url = `${window.location.href.split('players')[0]}players/${
       page.value
     }`;
