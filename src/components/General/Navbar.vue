@@ -73,7 +73,7 @@ onMounted(() => {
 });
 
 
-function selectedKey(url: string) {
+function selectedKey(url: string) { 
   if (url.includes('/news')) {
     return ['2'];
   } else if (url.includes('/register')) {

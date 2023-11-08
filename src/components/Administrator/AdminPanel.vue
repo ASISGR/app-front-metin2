@@ -7,6 +7,7 @@
           ><Settings></Settings></a-tab-pane
         >
         <a-tab-pane key="3" tab="Λίστα παικτών">Content of Tab Pane 3</a-tab-pane>
+        <a-tab-pane key="4" tab="Ενημέρωση σε Emails"><ServerAnnouncement></ServerAnnouncement></a-tab-pane>
       </a-tabs>
     </template>
   </Card>
@@ -18,6 +19,7 @@
   import { useRouter } from 'vue-router';
   import { useUserStore } from '@/stores/useUserStore';
   import Settings from '@/components/Administrator/Settings.vue'
+import ServerAnnouncement from "./ServerAnnouncement.vue";
   const activeKey = ref("1");
 
 const userStore = useUserStore();

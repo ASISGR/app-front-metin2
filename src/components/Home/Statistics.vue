@@ -92,7 +92,7 @@
     API.sendRequest("statistics", "GET")
       .then((response: any) => {
         statistics.playerOnline = response.sumOfPlayersOnline;
-        statistics.playersOnline24Hours = response.sumOfPlayersOnline;
+        statistics.playersOnline24Hours = response.sumOfPlayersOnline24;
         statistics.totalAccounts = response.sumAccountsLength;
         statistics.accountsPerKingdom = response.sumAccountsPerKingdom;
         statistics.sumOfGold = response.sumOfGold;
@@ -108,7 +108,7 @@
       API.sendRequest("statistics", "GET")
         .then((response: any) => {
         statistics.playerOnline = response.sumOfPlayersOnline;
-        statistics.playersOnline24Hours = response.sumOfPlayersOnline;
+        statistics.playersOnline24Hours = response.sumOfPlayersOnline24;
         statistics.totalAccounts = response.sumAccountsLength;
         statistics.accountsPerKingdom = response.sumAccountsPerKingdom;
         statistics.sumOfGold = response.sumOfGold;
