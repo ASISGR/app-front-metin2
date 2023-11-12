@@ -98,7 +98,7 @@
           <a-menu-item key="2"
             ><router-link to="/dashboard">Προφίλ</router-link></a-menu-item
           >
-          <a-menu-item @click="showModal" key="3">Itemshop</a-menu-item>
+          <a-menu-item key="3"><a target="_blank" href="/itemshop">Itemshop</a></a-menu-item>
           <a-menu-item key="4"
             ><router-link to="/debug-characters"
               >Χαρακτήρες</router-link
@@ -109,7 +109,6 @@
               >Αλλαγή στοιχείων λογαριασμού</router-link
             ></a-menu-item
           >
-          <a-menu-item key="6">Κοίτα τα δώρα σου</a-menu-item>
           <a-menu-item @click="logout()" key="7">Αποσύνδεση</a-menu-item>
         </a-sub-menu>
       </a-menu>

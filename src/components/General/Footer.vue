@@ -14,13 +14,13 @@
           ><router-link to="/">Κανονισμοί</router-link></a-menu-item
         >
         <a-menu-item key="11"
-          ><router-link to="/">Επικοινωνία</router-link></a-menu-item
+          ><a target="_blank" href="/legal/Refund-policy.pdf">Πολιτική επιστροφής</a></a-menu-item
         >
         <a-menu-item key="12"
-          ><router-link to="/">Πολιτική Απορρήτου</router-link></a-menu-item
+          ><a target="_blank" href="/legal/Privacy-policy.pdf">Πολιτική Απορρήτου</a></a-menu-item
         >
         <a-menu-item key="13"
-          ><router-link to="/">Όροι χρήσης</router-link></a-menu-item
+          ><a target="_blank" href="/legal/ToS.pdf">Όροι χρήσης</a></a-menu-item
         >
       </a-menu></a-col
     >
