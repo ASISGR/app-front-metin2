@@ -92,7 +92,6 @@ onMounted(() => {
   )
     .then((response: any) => {
       players.value = response.players;
-      console.log(players.value);
       const fillPagination = {
         totalPlayers: response.totalPlayers,
         hasNextPage: response.hasNextPage,

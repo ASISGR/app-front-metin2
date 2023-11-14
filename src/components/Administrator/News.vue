@@ -95,7 +95,6 @@
     author: values.author,
   })
     .then((response: any) => {
-      console.log(response);
       message.success(response.message);
     })
     .catch((err) => {

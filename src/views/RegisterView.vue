@@ -1,5 +1,6 @@
 <template>
-  <Card title="Register">
+  <!--serverSettings?.registerStatus && userStore.isLogged === false-->
+  <Card :title="getRegisterTitle()">
     <template
       #content
       v-if="serverSettings?.registerStatus && userStore.isLogged === false"
@@ -8,8 +9,8 @@
         <a-alert
           v-if="serverSettings?.registerEmailActivationStatus"
           closable
-          message="Informational Notes"
-          description="Please ensure you input a valid email address. After creating your account, you will need to verify your email to sign in to the game and gain access to all features."
+          :message=getInfoTitle()
+          :description=getInfoDescription()
           type="info"
           show-icon
         />
@@ -37,7 +38,7 @@
         @finish="onFinish"
       >
         <a-form-item
-          label="Username"
+          :label=getUsername()
           :name="['login']"
           :rules="[
             { required: true, message: 'Please input your username!' },
@@ -62,7 +63,7 @@
         </a-form-item>
 
         <a-form-item
-          label="Real Name"
+          :label=getRealname()
           :name="['real_name']"
           :rules="[
             { required: true, message: 'Please input your real name!' },
@@ -86,7 +87,7 @@
         </a-form-item>
 
         <a-form-item
-          label="Password"
+        :label=getPassword()
           :name="['password']"
           :rules="[
             { required: true, message: 'Please input your password!' },
@@ -110,7 +111,7 @@
         </a-form-item>
 
         <a-form-item
-          label="Repeat password"
+        :label=getPasswordRepeat()
           :name="['repeatPassword']"
           :rules="[
             { trigger: 'change', validator: passwordRepeatValidation },
@@ -137,7 +138,7 @@
 
         <a-form-item
           :name="['email']"
-          label="Email"
+          :label=getEmail()
           :rules="[
             { type: 'email' },
             { required: true, message: 'Please input your email!' },
@@ -162,9 +163,9 @@
         </a-form-item>
 
         <a-form-item
-          :name="['repeatEmail']"
-          label="Repeat email"
-          :rules="[
+        :label=getEmailRepeat()
+        :name="['repeatEmail']"
+        :rules="[
             { trigger: 'change', validator: emailRepeatValidation },
 
             { type: 'email' },
@@ -189,7 +190,7 @@
         </a-form-item>
 
         <a-form-item
-          label="question-secret"
+        :label=getSecret()
           :name="['question1']"
           :rules="[{ required: true, message: 'Please select a secret!' }]"
         >
@@ -202,7 +203,7 @@
         </a-form-item>
 
         <a-form-item
-          label="Answer"
+        :label=getSecretAnswer()
           :name="['answer1']"
           :rules="[
             { required: true, message: 'Please input your secret!' },
@@ -227,7 +228,7 @@
 
         <a-form-item
           :name="['social_id']"
-          label="Delete character code"
+          :label=getDeleteCode()
           :rules="[
             {
               required: true,
@@ -267,19 +268,20 @@
           :wrapper-col="{ offset: 8, span: 8 }"
         >
           <a-checkbox v-model:checked="formState.termsOfService">
-            I agree with the Terms and Conditions
+            {{ t('AGREE_TERMS_CONDITIONS')}}
           </a-checkbox>
         </a-form-item>
 
+        
         <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-          <a-button type="primary" html-type="submit">Αποστολή</a-button>
+          <a-button type="primary" html-type="submit">{{t('SUBMIT')}}</a-button>
         </a-form-item>
       </a-form>
     </template>
     <template #content v-else>
       <a-result
         status="warning"
-        title="Register is deactivated or you are logged in."
+        :title=getDeactiveMessage()
       >
       </a-result>
     </template>
@@ -291,6 +293,8 @@ import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
 import { UserOutlined, LockOutlined , MailOutlined, SecurityScanOutlined, SafetyOutlined} from "@ant-design/icons-vue";
+import { useI18n } from 'vue-i18n';
+const { t, locale } = useI18n()
 
 const userStore = useUserStore();
 const layout = {
@@ -361,7 +365,6 @@ async function usernameExistValidation(rule: any, value: string) {
     })
     .catch((response: any) => {
       if (response.status !== 200) {
-        console.log(response.data.message);
 
         return Promise.reject(response.data.message);
       }
@@ -390,6 +393,61 @@ const passwordRepeatValidation = (rule: any, value: string) => {
   }
   return Promise.resolve();
 };
+
+function getInfoDescription(){
+  return t("REGISTER_INFO_NOTES")
+}
+
+function getInfoTitle(){
+  return t("REGISTER_INFO_NOTES_TITLE")
+}
+
+function getRegisterTitle(){
+  return  t('REGISTER') 
+}
+
+function getDeactiveMessage(){
+  return t('REGISTER_DEACTIVATED')
+}
+
+function getUsername() {
+  return t('REGISTER_USERNAME');
+}
+
+function getRealname() {
+  return t('REGISTER_FIRSTNAME');
+}
+
+
+function getPassword() {
+  return t('REGISTER_PASSWORD');
+}
+
+function getPasswordRepeat() {
+  return t('REGISTER_PASSWORD_REPEAT');
+}
+
+function getEmail() {
+  return t('REGISTER_EMAIL');
+}
+
+function getEmailRepeat() {
+  return t('REGISTER_EMAIL_REPEAT');
+}
+
+function getSecret() {
+  return t('REGISTER_SECRET');
+}
+
+function getSecretAnswer() {
+  return t('REGISTER_SECRET_ANSWER');
+}
+
+function getDeleteCode() {
+  return t('REGISTER_DELETE_CODE');
+}
+
+
 
 onMounted(() => {
   APIController.sendRequest('settings-status', 'GET')

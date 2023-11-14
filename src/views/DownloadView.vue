@@ -2,7 +2,7 @@
   <Card title="ΛΉΨΗ ΠΑΙΧΝΙΔΙΟΎ">
     <template #content>
       <a-space>
-        <a-button type="primary" :size="size">
+        <a-button target="_blank" :disabled="isDisabledDownloadLink" :href="`${ downloadLink ? downloadLink : null }`" type="primary" :size="size">
           <template #icon>
             <DownloadOutlined />
           </template>
@@ -54,8 +54,27 @@
 import Card from '@/components/General/Card.vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
 import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref } from 'vue';
-
+import { ref, onMounted, computed } from 'vue';
+import APIController from '@/services/api/API.communicate';
 const size = ref<SizeType>('large');
+
+const downloadLink = ref('');
+
+onMounted(() => { 
+APIController.sendRequest('settings-status','GET').then((response:any) => {
+  downloadLink.value = response.downloadLink;
+}).catch((err:any) => {
+  console.log(err)
+})
+})
+
+
+const isDisabledDownloadLink = computed(() => { 
+  if(downloadLink.value)
+  {
+    return false;
+  }
+  return true;
+})
 </script>
 <style scoped></style>

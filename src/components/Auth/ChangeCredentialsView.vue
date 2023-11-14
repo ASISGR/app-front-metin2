@@ -1,6 +1,6 @@
 <template>
  
-  <Card title="ΑΛΛΑΓΉ ΚΩΔΙΚΟΎ ΠΡΌΣΒΑΣΗΣ">
+  <Card :title=getChangeCredentialsTitle()>
     <template #content> 
       <a-form
         :model="formState"
@@ -11,7 +11,7 @@
       >
 
       <a-form-item
-          label="Current Password"
+          :label=getChangeCredentialsCurrentP()
           :name="['oldPassword']"
           :rules="[
             { required: true, message: 'Please input your current password!' },
@@ -35,7 +35,7 @@
         </a-form-item>
 
         <a-form-item
-          label="New password"
+        :label=getChangeCredentialsNewP()
           :name="['newPassword']"
           :rules="[
             { required: true, message: 'Please input your password!' },
@@ -59,7 +59,7 @@
         </a-form-item>
 
         <a-form-item
-          label="Repeat new password"
+        :label=getChangeCredentialsRepeatNewP()
           :name="['repeatNewPassword']"
           :rules="[
             { trigger: 'change', validator: passwordRepeatValidation },
@@ -86,7 +86,7 @@
 
       
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-          <a-button type="primary" html-type="submit">Αλλαγή κωδικού πρόσβασης</a-button>
+          <a-button type="primary" html-type="submit">{{ t('SUBMIT') }}</a-button>
         </a-form-item>
       </a-form>
 
@@ -103,6 +103,8 @@ import { message } from 'ant-design-vue';
 import {
   LockOutlined,
 } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
+const { t, locale } = useI18n()
 
 const userStore = useUserStore();
 const route = useRouter();
@@ -131,7 +133,6 @@ const onFinish = (values: any) => {
     updatePassword: formState.newPassword,
   })
     .then((response: any) => {
-      console.log(response);
       message.success(response.message);
     })
     .catch((err) => {
@@ -151,4 +152,27 @@ onMounted(() => {
     route.push('/');
   }
 });
+
+function getChangeCredentialsTitle(){
+  return  t('CREDENTIALS_CHANGE') 
+
+}
+
+function getChangeCredentialsCurrentP(){
+  return  t('CREDENTIALS_CURRENT_PASSOWRD') 
+
+}
+
+function getChangeCredentialsNewP(){
+  return  t('CREDENTIALS_NEW_PASSOWRD') 
+
+}
+
+function getChangeCredentialsRepeatNewP(){
+  return  t('CREDENTIALS_REPEAT_NEW_PASSOWRD') 
+
+}
+
+
+
 </script>

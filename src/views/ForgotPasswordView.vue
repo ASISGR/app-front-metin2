@@ -83,7 +83,6 @@ const onFinish = (values: any) => {
     email: values.email,
   })
     .then((res: any) => {
-      console.log(res);
       message.success(res.message);
     })
     .catch((err) => {

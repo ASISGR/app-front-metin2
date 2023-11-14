@@ -35,17 +35,24 @@
         Αποστολή
       </a-button>
     </a-form-item>
+    <!--table start-->
+    <EmailTableComponent v-if="emails.length > 0" :emails="emails" @send-emails-data="getEmailData"></EmailTableComponent>
+    <!--table end-->
   </a-form>
+  
 </template>
 <script lang="ts" setup>
-  import { reactive, onMounted } from "vue";
+  import { ref, reactive, onMounted } from "vue";
   import APIController from "@/services/api/API.communicate";
   import { useRouter } from "vue-router";
   import { useUserStore } from "@/stores/useUserStore";
   import { message } from "ant-design-vue";
-
+import EmailTableComponent from '@/components/Administrator/EmailTableComponent.vue'
   const userStore = useUserStore();
   const route = useRouter();
+  interface Email {
+    email: string;
+  }
 
   interface FormState {
     subject: string;
@@ -57,18 +64,34 @@
     title: "",
     content: "",
   });
-
+  const emails = ref<Email[]|any>([]) 
+  const selectedEmails = ref<Email[]|any>([]) 
   onMounted(() => {
     if (!userStore.isLogged || !userStore.getUser.isAdmin) {
       route.push("/");
     }
+    getEmails()
   });
+
+
+
+  async function getEmails(){
+   return APIController.sendRequest('server-marketing-emails','GET').then((response: any) => {
+    console.log(response)  
+    emails.value = response.emails;
+    return response;
+    }).catch((err:any) => { 
+      console.log(err)
+      return err
+    })
+  }
 
   const onFinish = (values: any) => {
     APIController.sendRequest("server-announcement", "POST", {
         subject: values.subject,
       title: values.title,
       content: values.content,
+      emails: selectedEmails.value
     })
       .then((response: any) => {
         console.log(response);
@@ -80,4 +103,13 @@
   };
 
   function onFinishFailed() {}
+
+  function getEmailData(emails:String[]){
+    let tempMails = []
+    for(let i = 0; i < emails.length; i++){
+      tempMails.push({email: emails[i]})
+    }
+    selectedEmails.value = tempMails;
+    console.log(selectedEmails.value)
+  }
 </script>

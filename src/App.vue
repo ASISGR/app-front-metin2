@@ -19,6 +19,7 @@
       /></a-layout-content>
     </a-layout>
     <a-layout-footer :style="footerStyle"><Footer></Footer></a-layout-footer>
+
   </a-layout>
 </template>
 
@@ -36,7 +37,21 @@ import { message } from 'ant-design-vue';
 import { useGeneralStore } from '@/stores/useGeneralStore';
 import { useI18n } from 'vue-i18n';
 const { t, locale } = useI18n()
+// Notification Start
+import { notification } from 'ant-design-vue';
 
+const openNotification = () => {
+  notification.open({
+    duration: 30,
+    message: 'Επίσημη έναρξη παιχνιδιού!',
+    description:
+      `Με χαρά και ενθουσιασμό που ανακοινώνουμε την επίσημη έναρξη του Metin2 Gameserver μας! Η μεγάλη στιγμή που περιμένατε έφτασε, και το ταξίδι σας στον κόσμο του Reventon ξεκινάει στις 17 Νοεμβρίου 2023, στις 18:00.`,
+    onClick: () => {
+      console.log('Notification Clicked!');
+    },
+  });
+};
+// Notification end
 const generalStore = useGeneralStore();
 
 
@@ -87,7 +102,6 @@ onMounted(() => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const hash = urlParams.get('hash');
-  console.log(hash);
 
   if (hash) {
     APIController.sendRequest('active', 'POST', { hash: hash })
@@ -101,6 +115,6 @@ onMounted(() => {
 
   // Set lang by lang from localStorage. If does not exists it's gr.
   locale.value = generalStore.getLang ? generalStore.getLang : 'gr'
-
+  openNotification()
 });
 </script>

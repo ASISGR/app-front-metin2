@@ -12,7 +12,6 @@ export const useGeneralStore = defineStore(
 
     // Functions
     function changeLang(selectedLang: string) {
-      console.log(selectedLang);
       lang.value = selectedLang;
     }
     // Return the useable methods.

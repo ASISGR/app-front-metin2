@@ -105,8 +105,6 @@ const characters = ref<String[]>(null);
     APIController.sendRequest("posts", "GET")
       .then((response: any) => {
         posts.value = response;
-        console.log(response);
-        console.log(posts);
       })
       .catch((err: any) => {
         console.log(err);
@@ -116,9 +114,6 @@ const characters = ref<String[]>(null);
   characters.value = userStore.getUser?.players;
 
   function editPost(post: Post) {
-    console.log(post)
-
-    console.log(post)
     if(!confirm('are you sure?')){
       return false;
     }
@@ -141,7 +136,6 @@ const characters = ref<String[]>(null);
       return false;
     }
     APIController.sendRequest('posts', 'DELETE', post).then((res:any) => { 
-      console.log(res)
       if(res.success){
        posts.value =  posts.value.filter((p) => p.id !== post.id)
        message.success(res.message)

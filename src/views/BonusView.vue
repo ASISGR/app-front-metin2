@@ -180,8 +180,6 @@ onMounted(async () => {
       response.item_attr_rare[9].apply = 'Δυνατό ενάντια σε Τέρατα';
 
       item_attr_rare.value = response.item_attr_rare;
-      console.log(item_attr_rare.value);
-      console.log(item_attr.value);
     })
     .catch((err) => {
       console.log(err);

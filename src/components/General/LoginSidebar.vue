@@ -177,7 +177,6 @@
             action: "login",
           });
 
-          console.log(token)
 
 
       try {
@@ -198,8 +197,6 @@
         login: formState.username,
         password: formState.password,
       });
-      console.log(userStore.loggedUser);
-      console.log(login);
       userStore.loggedUser.token = login.access_token;
       userStore.loggedUser.userInfo = login.accountInfo;
       userStore.loggedUser.login = true;

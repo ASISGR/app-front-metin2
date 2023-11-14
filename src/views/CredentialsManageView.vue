@@ -182,7 +182,6 @@ function send() {
     'POST',
     updateCredentials.value
   ).then((res: any) => {
-    console.log(res);
     responseMessage.value = res.message;
   });
 }
