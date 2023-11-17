@@ -109,7 +109,7 @@
               >Αλλαγή στοιχείων λογαριασμού</router-link
             ></a-menu-item
           >
-          <a-menu-item @click="logout()" key="7">Αποσύνδεση</a-menu-item>
+          <a-menu-item @click="logout" key="7">Αποσύνδεση</a-menu-item>
         </a-sub-menu>
       </a-menu>
     </template>
@@ -200,6 +200,7 @@
       userStore.loggedUser.token = login.access_token;
       userStore.loggedUser.userInfo = login.accountInfo;
       userStore.loggedUser.login = true;
+      router.push('/dashboard')
     } catch (error) {
       console.log(error);
       showError.value = true;

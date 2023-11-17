@@ -28,6 +28,8 @@ const route = useRouter();
   onMounted(() => {
     if (!userStore.isLogged || !userStore.getUser.isAdmin) {
     route.push('/');
+    return 0;
+
   }
 });
 </script>

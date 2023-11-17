@@ -1,4 +1,12 @@
 <template>
+    <Card title="ΕΝΕΡΓΟΠΟΙΗΣΗ ΛΟΓΑΡΙΣΜΟΥ" v-if="!userStore.getUser?.isVerified">
+      <template #content>
+
+    <a-steps :items="items"></a-steps>
+    <a-button @click="sendAccountVerification" type="primary">Επαναστολή επιβεβαίωσης</a-button>
+<p>Μπορείτε να εκτελέσετε την επαναστολή επιβεβαίωσης κάθε 1 λεπτό.</p>
+      </template>
+  </Card>
   <Card title="ΚΑΡΤΈΛΑ ΣΤΟΙΧΕΊΩΝ ΛΟΓΑΡΙΑΣΜΟΎ">
     <template #content>
       <a-descriptions title="Το προφίλ μου" layout="vertical">
@@ -89,6 +97,34 @@ import blueFlag from '@/assets/images/empires/3.jpg';
 import { useUserStore } from '@/stores/useUserStore';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { h } from 'vue';
+import {
+  UserOutlined,
+  SolutionOutlined,
+  LoadingOutlined,
+  SmileOutlined,
+} from '@ant-design/icons-vue';
+import { type StepProps } from 'ant-design-vue';
+import APIController from '@/services/api/API.communicate';
+import { message } from 'ant-design-vue';
+import { ref } from 'vue';
+const items = ref([
+  {
+    title: 'Σύνδεση',
+    status: 'finish',
+    icon: h(UserOutlined),
+  },
+  {
+    title: 'Επιβεβαίωση',
+    status: 'process',
+    icon: h(LoadingOutlined),
+  },
+  {
+    title: 'Ολοκλήρωση',
+    status: 'wait',
+    icon: h(SmileOutlined),
+  },
+] as StepProps[]);
 
 const userStore = useUserStore();
 const route = useRouter();
@@ -96,8 +132,38 @@ const route = useRouter();
 onMounted(() => {
   if (!userStore.isLogged) {
     route.push('/');
+    return 0;
   }
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const hash = urlParams.get('hash');
+
+  if (hash) {
+    APIController.sendRequest('active', 'POST', { hash: hash })
+      .then((res: any) => {
+        message.success(res.message);
+        items.value[1].status = 'finish';
+        items.value[1].icon = h(SolutionOutlined);
+        items.value[2].status = 'finish'
+        userStore.loggedUser.userInfo.isVerified = true;
+
+      })
+      .catch((err: any) => {
+        message.error(err.data.message);
+      });
+  }
+
 });
+
+function sendAccountVerification(){
+  APIController.sendRequest('send-retry-verification', 'POST').then((response:any) => {
+    message.success(response.message)
+    
+   }).catch((err:any) => {
+    message.error(err.data.message)
+  })
+}
 </script>
 <style scoped>
 .error-message {

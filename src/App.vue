@@ -99,20 +99,6 @@ const onBreakpoint = (broken: boolean) => {
 };
 
 onMounted(() => {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const hash = urlParams.get('hash');
-
-  if (hash) {
-    APIController.sendRequest('active', 'POST', { hash: hash })
-      .then((res: any) => {
-        message.success(res.message);
-      })
-      .catch((err: any) => {
-        message.error(err.data.message);
-      });
-  }
-
   // Set lang by lang from localStorage. If does not exists it's gr.
   locale.value = generalStore.getLang ? generalStore.getLang : 'gr'
   openNotification()

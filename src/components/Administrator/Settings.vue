@@ -31,6 +31,8 @@
   onMounted(() => {
     if (!userStore.isLogged || !userStore.getUser.isAdmin) {
       route.push("/");
+      return 0;
+
     }
 
     APIController.sendRequest("settings-status", "GET")

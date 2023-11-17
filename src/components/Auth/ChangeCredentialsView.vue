@@ -150,6 +150,7 @@ const passwordRepeatValidation = (rule: any, value: string) => {
 onMounted(() => {
   if (!userStore.isLogged) {
     route.push('/');
+    return 0;
   }
 });
 

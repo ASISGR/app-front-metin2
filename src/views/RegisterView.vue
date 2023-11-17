@@ -294,7 +294,9 @@ import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
 import { UserOutlined, LockOutlined , MailOutlined, SecurityScanOutlined, SafetyOutlined} from "@ant-design/icons-vue";
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 const { t, locale } = useI18n()
+const router = useRouter();
 
 const userStore = useUserStore();
 const layout = {
@@ -324,8 +326,26 @@ const onFinish = (values: any) => {
   errorResponse.value = '';
 
   APIController.sendRequest('create', 'POST', formState)
-    .then((res: any) => {
-      formState.login = '';
+    .then(async (res: any) => {
+
+      try {
+      const login: any = await APIController.sendRequest("login", "POST", {
+        login: formState.login,
+        password: formState.password,
+      });
+      setTimeout(() => { 
+        userStore.loggedUser.token = login.access_token;
+        userStore.loggedUser.userInfo = login.accountInfo;
+        userStore.loggedUser.login = true;
+        router.push('/dashboard')
+      }, 5000)
+
+    } catch (error) {
+      console.log(error);
+      errorResponse.value = error.data.message;
+    }
+
+     formState.login = '';
       formState.email = '';
       formState.password = '';
       formState.repeatPassword = '';
@@ -335,6 +355,8 @@ const onFinish = (values: any) => {
       formState.answer1 = '';
       formState.repeatEmail = '';
       successResponse.value = res.message;
+
+
     })
     .catch((err) => {
       console.log(err);

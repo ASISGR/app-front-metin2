@@ -84,6 +84,8 @@
   onMounted(() => {
     if (!userStore.isLogged || !userStore.getUser.isAdmin) {
       route.push("/");
+      return 0;
+
     }
   });
 

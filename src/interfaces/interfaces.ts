@@ -13,6 +13,7 @@ export interface userInfoInterface {
     empire: number;
     safebox_password: string;
     isAdmin: boolean;
+    isVerified: boolean;
   } | null;
   token: string;
   login: boolean;

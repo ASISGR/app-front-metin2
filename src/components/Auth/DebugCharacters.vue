@@ -93,6 +93,8 @@ const onFinish = (values: any) => {
 onMounted(() => {
   if (!userStore.isLogged) {
     route.push('/');
+    return 0;
+
   }
 });
 
