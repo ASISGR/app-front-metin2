@@ -147,11 +147,13 @@ onMounted(() => {
   if (hash) {
     APIController.sendRequest('active', 'POST', { hash: hash })
       .then((res: any) => {
-        message.success(res.message);
+        message.success(res.message,30);
         items.value[1].status = 'finish';
         items.value[1].icon = h(SolutionOutlined);
         items.value[2].status = 'finish'
         userStore.loggedUser.userInfo.isVerified = true;
+        userStore.loggedUser.userInfo.account_status = 'OK';
+
 
       })
       .catch((err: any) => {
