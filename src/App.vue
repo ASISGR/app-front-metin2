@@ -39,13 +39,14 @@ import { useI18n } from 'vue-i18n';
 const { t, locale } = useI18n()
 // Notification Start
 import { notification } from 'ant-design-vue';
+import { useUserStore } from '@/stores/useUserStore';
 
 const openNotification = () => {
   notification.open({
     duration: 30,
-    message: 'Επίσημη έναρξη παιχνιδιού!',
+    message: 'Το παιχνίδι έχει ανοίξει!',
     description:
-      `Με χαρά και ενθουσιασμό που ανακοινώνουμε την επίσημη έναρξη του Metin2 Gameserver μας! Η μεγάλη στιγμή που περιμένατε έφτασε, και το ταξίδι σας στον κόσμο του Reventon ξεκινάει στις 17 Νοεμβρίου 2023, στις 18:00.`,
+      `Εξερευνήστε τον Reventon, δημιουργήστε την ιστορία σας! Καλώς ήλθατε στον κόσμο μας, όπου η περιπέτεια γίνεται πραγματικότητα.`,
     onClick: () => {
       console.log('Notification Clicked!');
     },
@@ -53,7 +54,7 @@ const openNotification = () => {
 };
 // Notification end
 const generalStore = useGeneralStore();
-
+const userStore = useUserStore();
 
 
 
@@ -102,5 +103,16 @@ onMounted(() => {
   // Set lang by lang from localStorage. If does not exists it's gr.
   locale.value = generalStore.getLang ? generalStore.getLang : 'gr'
   openNotification()
+
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const hash = urlParams.get('hash');
+
+
+  if (hash && !userStore.isLogged) {
+    message.info('Παρακαλώ συνδεθείτε στον λογαριασμό σας ώστε να ολοκληρωθεί η διαδικασία επαλήθευσης.', 30)
+  }
+
 });
 </script>

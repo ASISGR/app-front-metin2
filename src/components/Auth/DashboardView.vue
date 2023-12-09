@@ -130,14 +130,19 @@ const userStore = useUserStore();
 const route = useRouter();
 
 onMounted(() => {
-  if (!userStore.isLogged) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const hash = urlParams.get('hash');
+
+
+  if (!userStore.isLogged && hash) {
+    route.push(`/?hash=${hash}`);
+    return 0;
+  } else  if (!userStore.isLogged) {
     route.push('/');
     return 0;
   }
 
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const hash = urlParams.get('hash');
 
   if (hash) {
     APIController.sendRequest('active', 'POST', { hash: hash })
@@ -150,7 +155,7 @@ onMounted(() => {
 
       })
       .catch((err: any) => {
-        message.error(err.data.message);
+        message.error(err.data.message, 30);
       });
   }
 
@@ -158,10 +163,10 @@ onMounted(() => {
 
 function sendAccountVerification(){
   APIController.sendRequest('send-retry-verification', 'POST').then((response:any) => {
-    message.success(response.message)
+    message.success(response.message, 30)
     
    }).catch((err:any) => {
-    message.error(err.data.message)
+    message.error(err.data.message, 30)
   })
 }
 </script>

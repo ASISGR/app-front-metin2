@@ -92,13 +92,17 @@
           <a-menu-item
             key="1"
             v-if="userStore.getUser && userStore.getUser.isAdmin"
-            ><router-link to="/admin-panel">Administrator</router-link></a-menu-item
+            ><router-link to="/admin-panel"
+              >Administrator</router-link
+            ></a-menu-item
           >
 
           <a-menu-item key="2"
             ><router-link to="/dashboard">Προφίλ</router-link></a-menu-item
           >
-          <a-menu-item key="3"><a target="_blank" href="/itemshop">Itemshop</a></a-menu-item>
+          <a-menu-item key="3"
+            ><a target="_blank" href="/itemshop">Itemshop</a></a-menu-item
+          >
           <a-menu-item key="4"
             ><router-link to="/debug-characters"
               >Χαρακτήρες</router-link
@@ -172,22 +176,22 @@
     console.log("Success:", values);
 
     // Recaptcha validation start.
-      const token = await grecaptcha
-          .execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {
-            action: "login",
-          });
-
-
-
-      try {
-        await APIController.sendRequest('verifyRecaptcha','POST', {
-        secret: import.meta.env.VITE_RECAPTCHA_SECRET_KEY,
-        response:token,
-      })
-      } catch (error) {
-        message.error(error.data.message)
-        return false
+    const token = await grecaptcha.execute(
+      import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+      {
+        action: "login",
       }
+    );
+
+    try {
+      await APIController.sendRequest("verifyRecaptcha", "POST", {
+        secret: import.meta.env.VITE_RECAPTCHA_SECRET_KEY,
+        response: token,
+      });
+    } catch (error) {
+      message.error(error.data.message, 30);
+      return false;
+    }
     // Recaptcha validation end.
     // Clean error template every time login is pressed.
 
@@ -200,11 +204,20 @@
       userStore.loggedUser.token = login.access_token;
       userStore.loggedUser.userInfo = login.accountInfo;
       userStore.loggedUser.login = true;
-      router.push('/dashboard')
+
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const hash = urlParams.get("hash");
+
+      if (hash) {
+        router.push(`/dashboard?hash=${hash}`);
+      }else{
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.log(error);
       showError.value = true;
-      message.error(error.data.message);
+      message.error(error.data.message, 30);
     }
   };
 

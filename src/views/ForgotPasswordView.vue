@@ -83,10 +83,10 @@ const onFinish = (values: any) => {
     email: values.email,
   })
     .then((res: any) => {
-      message.success(res.message);
+      message.success(res.message, 30);
     })
     .catch((err) => {
-      message.error(err.data.message);
+      message.error(err.data.message, 30);
     });
 };
 const layout = {
@@ -102,10 +102,10 @@ onMounted(() => {
   if (hash) {
     APIController.sendRequest('reset-password', 'POST', { hash: hash })
       .then((res: any) => {
-        message.success(res.message);
+        message.success(res.message, 30);
       })
       .catch((err: any) => {
-        message.error(err.data.message);
+        message.error(err.data.message, 30);
       });
   }
 });
