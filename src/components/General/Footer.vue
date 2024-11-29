@@ -1,6 +1,6 @@
 <template>
   <a-row :style="{ lineHeight: '64px' }">
-    <a-col :span="12"> Reventon Metin2 &copy;2023 All Rights reserved</a-col>
+    <a-col :span="12"> Asceo Metin2 &copy;2023 All Rights reserved</a-col>
 
     <a-col :span="12">
       <a-menu theme="dark" mode="horizontal">

@@ -42,11 +42,11 @@ import { notification } from 'ant-design-vue';
 import { useUserStore } from '@/stores/useUserStore';
 
 const openNotification = () => {
-  notification.open({
+  notification.info({
     duration: 30,
-    message: 'Το παιχνίδι έχει ανοίξει!',
+    message: 'Το παιχνίδι βρίσκεται υπό κατασκευή!',
     description:
-      `Εξερευνήστε τον Reventon, δημιουργήστε την ιστορία σας! Καλώς ήλθατε στον κόσμο μας, όπου η περιπέτεια γίνεται πραγματικότητα.`,
+      `Ο Asceo2 Metin2 ετοιμάζεται να σας προσφέρει μια μοναδική gaming εμπειρία. Σύντομα θα ανακοινωθεί η ημερομηνία έναρξης. Μείνετε συντονισμένοι!`,
     onClick: () => {
       console.log('Notification Clicked!');
     },

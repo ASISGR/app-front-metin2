@@ -63,10 +63,10 @@ import yellowFlag from '@/assets/images/empires/2.jpg';
 import blueFlag from '@/assets/images/empires/3.jpg';
 import { useRouter } from 'vue-router';
 
+const route = useRouter();
 const guilds = ref([]);
 const paginationData = ref<any>(null);
-const route = useRouter();
-const page = ref(route.currentRoute.value.params.index);
+const page = ref<any>(route.currentRoute.value.params.index);
 
 const guildTableColumns = ref([
   { title: 'Θέση', key: 'index', dataIndex: 'index' },
@@ -90,7 +90,6 @@ onMounted(() => {
     'GET'
   )
     .then((response: any) => {
-      console.log(response.guilds)
       guilds.value = response.guilds;
 
       const fillPagination = {
@@ -111,10 +110,11 @@ onMounted(() => {
 
 watchEffect(() => {
   if (page.value) {
+    page.value = parseInt(page.value)
+
     const url = `${window.location.href.split('guilds')[0]}guilds/${
       page.value
     }`;
-
     history.pushState(null, '', url);
 
     API.sendRequest(`topListGuilds/${page.value}`, 'GET')
@@ -122,7 +122,7 @@ watchEffect(() => {
         guilds.value = response.guilds;
 
         const fillPagination = {
-          totalGuilds: response.totalGuilds[0],
+          totalGuilds: response.totalGuilds,
           hasNextPage: response.hasNextPage,
           hasPreviousPage: response.hasPreviousPage,
           currentPage: response.currentPage,
