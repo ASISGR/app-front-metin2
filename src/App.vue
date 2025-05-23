@@ -44,9 +44,11 @@ import { useUserStore } from '@/stores/useUserStore';
 const openNotification = () => {
   notification.info({
     duration: 30,
-    message: 'Το παιχνίδι βρίσκεται υπό κατασκευή!',
-    description:
-      `Ο Asceo2 Metin2 ετοιμάζεται να σας προσφέρει μια μοναδική gaming εμπειρία. Σύντομα θα ανακοινωθεί η ημερομηνία έναρξης. Μείνετε συντονισμένοι!`,
+    message: 'Η μεγάλη στιγμή πλησιάζει!',
+    description: 
+      `Ο Aeolus Metin2 είναι σχεδόν έτοιμος να σας προσφέρει μια απαράμιλλη gaming εμπειρία! 
+      Ετοιμαστείτε για την επίσημη έναρξη στις 28/05/2025, ώρα 18:00. 
+      Το ταξίδι σας στον κόσμο του Aeolus2 ξεκινά! Μείνετε συντονισμένοι!`,
     onClick: () => {
       console.log('Notification Clicked!');
     },

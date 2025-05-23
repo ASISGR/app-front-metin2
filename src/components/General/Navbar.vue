@@ -52,15 +52,22 @@
       
 </a-menu-item
     >
-
-  </a-menu>
-
+    <a-menu-item
+    
+    >
+    <a href="https://facebook.com/aeolus2el" target="_blank" ><FacebookOutlined class="text-9xl" /></a>
+    
+    
+  </a-menu-item>
+  
+  
+</a-menu>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import CountryFlag from 'vue-country-flag-next'
-import {  DownOutlined } from '@ant-design/icons-vue';
+import {  DownOutlined, FacebookOutlined } from '@ant-design/icons-vue';
 import { useGeneralStore } from '@/stores/useGeneralStore';
 import { useI18n } from 'vue-i18n';
 const { t, locale } = useI18n()

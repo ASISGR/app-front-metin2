@@ -121,7 +121,7 @@
 
   <a-modal
     v-model:open="open"
-    title="Reventon Shop"
+    title="Asceo2 Shop"
     width="auto"
     @ok="handleOk">
     <iframe
@@ -136,7 +136,7 @@
       data-tf-redirect-target="”_self”"
       frameborder="0"
       allowfullscreen
-      src="https://reventon.gr/itemshop/"></iframe>
+      src="https://asceo2.eu/itemshop/"></iframe>
   </a-modal>
 </template>
 

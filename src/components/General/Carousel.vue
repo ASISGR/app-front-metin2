@@ -12,16 +12,16 @@
     </template>
 
     <div>
-      <img src="@/assets/images/carousel/carousel1.png" alt="" />
+      <img src="@/assets/images/carousel/carousel1.jpg" alt="" />
     </div>
     <div>
-      <img src="@/assets/images/carousel/carousel2.png" alt="" />
+      <img src="@/assets/images/carousel/carousel2.jpg" alt="" />
     </div>
     <div>
-      <img src="@/assets/images/carousel/carousel3.png" alt="" />
+      <img src="@/assets/images/carousel/carousel3.jpg" alt="" />
     </div>
     <div>
-      <img src="@/assets/images/carousel/carousel4.png" alt="" />
+      <img src="@/assets/images/carousel/carousel4.jpg" alt="" />
     </div>
   </a-carousel>
 </template>
