@@ -101,7 +101,7 @@
             ><router-link to="/dashboard">Προφίλ</router-link></a-menu-item
           >
           <a-menu-item key="3"
-            ><a target="_blank" href="/itemshop">Itemshop</a></a-menu-item
+            ><a target="_blank" href="https://itemshop.aeolus2.eu/">Itemshop</a></a-menu-item
           >
           <a-menu-item key="4"
             ><router-link to="/debug-characters"
