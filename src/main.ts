@@ -1,5 +1,7 @@
 import "./assets/main.css";
 import "./assets/index.css"
+import '@fortawesome/fontawesome-free/css/all.css';
+
 import { createApp, ref } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";

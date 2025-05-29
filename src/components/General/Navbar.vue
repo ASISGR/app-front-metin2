@@ -55,10 +55,18 @@
     <a-menu-item
     
     >
-    <a href="https://facebook.com/aeolus2el" target="_blank" ><FacebookOutlined class="text-9xl" /></a>
+    <a href="https://facebook.com/aeolus2el" target="_blank">
+  <i class="fab fa-facebook text-xl"></i>
+</a>
     
     
   </a-menu-item>
+  <a-menu-item>
+    <a href="https://discord.gg/wtMQs4rW" target="_blank">
+  <i class="fab fa-discord text-xl"></i>
+</a>
+
+</a-menu-item>
   
   
 </a-menu>
