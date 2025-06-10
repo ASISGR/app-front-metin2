@@ -62,7 +62,7 @@
     
   </a-menu-item>
   <a-menu-item>
-    <a href="https://discord.gg/wtMQs4rW" target="_blank">
+    <a href="https://discord.com/invite/aCtPwYGFpD" target="_blank">
   <i class="fab fa-discord text-xl"></i>
 </a>
 
