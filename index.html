@@ -7,6 +7,15 @@
     <title><{VITE_TITLE}></title>
     <script src="https://www.google.com/recaptcha/api.js?trustedtypes=true" async defer></script>
     <script src="https://www.google.com/recaptcha/enterprise.js?render=<{VITE_RECAPTCHA_SITE_KEY}>" async defer></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1MCJ37XLC7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1MCJ37XLC7');
+  </script>
   </head>
   <body>
     <div id="app"></div>
