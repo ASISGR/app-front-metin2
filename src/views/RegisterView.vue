@@ -334,26 +334,27 @@ const onFinish = async () => {
   errorResponse.value = '';
   isSubmitting.value = true;
 
+  let recaptchaToken = '';
+
   try {
     await grecaptcha.ready(async () => {
-      const token = await grecaptcha.execute(
+      recaptchaToken = await grecaptcha.execute(
         import.meta.env.VITE_RECAPTCHA_SITE_KEY,
         { action: 'register' }
       );
-
-      await APIController.sendRequest('verifyRecaptcha', 'POST', {
-        response: token,
-      });
     });
   } catch (error: any) {
-    message.error(error?.data?.message || 'Recaptcha verification failed.', 30);
-    errorResponse.value = error?.data?.message || 'Recaptcha verification failed.';
+    errorResponse.value = 'Recaptcha failed. Please try again.';
+    message.error(errorResponse.value, 30);
     isSubmitting.value = false;
     return;
   }
 
   try {
-    const res: any = await APIController.sendRequest('create', 'POST', formState);
+    const res: any = await APIController.sendRequest('create', 'POST', {
+      ...formState,
+      recaptchaToken,
+    });
 
     successResponse.value = res.message;
 
@@ -371,7 +372,6 @@ const onFinish = async () => {
       }, 5000);
     } catch (error: any) {
       console.log(error);
-      errorResponse.value = error?.data?.message || 'Auto login failed.';
     }
 
     formState.login = '';
@@ -392,6 +392,7 @@ const onFinish = async () => {
     isSubmitting.value = false;
   }
 };
+
 const checkTermsOfService = (rule: any, value: boolean) => {
   if (!value) {
     return Promise.reject('Accept our terms of service to create your account');
