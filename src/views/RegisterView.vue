@@ -337,13 +337,30 @@ const onFinish = async () => {
   let recaptchaToken = '';
 
   try {
-    await grecaptcha.ready(async () => {
-      recaptchaToken = await grecaptcha.execute(
-        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-        { action: 'register' }
-      );
+    const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+    if (!siteKey) {
+      throw new Error('Missing VITE_RECAPTCHA_SITE_KEY');
+    }
+
+    if (typeof grecaptcha === 'undefined') {
+      throw new Error('grecaptcha is not loaded');
+    }
+
+    recaptchaToken = await new Promise<string>((resolve, reject) => {
+      grecaptcha.ready(() => {
+        grecaptcha
+          .execute(siteKey, { action: 'register' })
+          .then((token: string) => resolve(token))
+          .catch((error: any) => reject(error));
+      });
     });
+
+    if (!recaptchaToken) {
+      throw new Error('Empty recaptcha token');
+    }
   } catch (error: any) {
+    console.log('Register recaptcha frontend error:', error);
     errorResponse.value = 'Recaptcha failed. Please try again.';
     message.error(errorResponse.value, 30);
     isSubmitting.value = false;
@@ -362,6 +379,7 @@ const onFinish = async () => {
       const login: any = await APIController.sendRequest('login', 'POST', {
         login: formState.login,
         password: formState.password,
+        recaptchaToken,
       });
 
       setTimeout(() => {
