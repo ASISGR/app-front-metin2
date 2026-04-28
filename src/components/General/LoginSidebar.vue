@@ -3,7 +3,6 @@
   <Card v-if="!userStore.isLogged" title="ΣΎΝΔΕΣΗ ΛΟΓΑΡΙΑΣΜΟΎ">
     <template #content>
       <div class="space-y-5">
-        <!-- Error Alert -->
         <div
           v-if="showError"
           class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-200"
@@ -27,16 +26,16 @@
           </div>
         </div>
 
-        <!-- Form -->
         <form class="space-y-4" @submit.prevent="onSubmit">
-          <!-- Username -->
           <div class="space-y-2">
             <label class="block text-sm font-semibold text-black">
               Username
             </label>
 
             <div class="relative">
-              <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <span
+                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+              >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z"
@@ -58,14 +57,15 @@
             </p>
           </div>
 
-          <!-- Password -->
           <div class="space-y-2">
             <label class="block text-sm font-medium text-black">
               Password
             </label>
 
             <div class="relative">
-              <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <span
+                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+              >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fill-rule="evenodd"
@@ -94,7 +94,9 @@
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  <path d="M10 3C5 3 1.73 7.11.46 9.07a1.67 1.67 0 000 1.86C1.73 12.89 5 17 10 17s8.27-4.11 9.54-6.07a1.67 1.67 0 000-1.86C18.27 7.11 15 3 10 3zm0 11a4 4 0 110-8 4 4 0 010 8z" />
+                  <path
+                    d="M10 3C5 3 1.73 7.11.46 9.07a1.67 1.67 0 000 1.86C1.73 12.89 5 17 10 17s8.27-4.11 9.54-6.07a1.67 1.67 0 000-1.86C18.27 7.11 15 3 10 3zm0 11a4 4 0 110-8 4 4 0 010 8z"
+                  />
                   <path d="M10 8a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
 
@@ -116,7 +118,6 @@
             </p>
           </div>
 
-          <!-- Actions -->
           <div class="flex items-center justify-between gap-3 text-sm">
             <RouterLink
               to="/forgot-password"
@@ -133,7 +134,6 @@
             </RouterLink>
           </div>
 
-          <!-- Submit -->
           <button
             type="submit"
             :disabled="disabled || isSubmitting"
@@ -175,7 +175,6 @@
   <Card v-else title="ΚΑΡΤΈΛΑ ΛΟΓΑΡΙΑΣΜΟΎ">
     <template #content>
       <div class="space-y-4">
-        <!-- User header -->
         <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
           <div class="flex items-center gap-3">
             <div
@@ -199,8 +198,7 @@
           </div>
         </div>
 
-        <!-- Account menu -->
-        <div class="space-y-2 ">
+        <div class="space-y-2">
           <RouterLink
             v-if="userStore.getUser && userStore.getUser.isAdmin"
             to="/admin-panel"
@@ -226,7 +224,7 @@
             Χαρακτήρες
           </RouterLink>
 
-          <RouterLink to="/account-handeling" class="sidebar-link ">
+          <RouterLink to="/account-handeling" class="sidebar-link">
             Αλλαγή στοιχείων λογαριασμού
           </RouterLink>
 
@@ -273,121 +271,131 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/useUserStore'
-import Card from './Card.vue'
-import APIController from '@/services/api/API.communicate'
-import { message } from 'ant-design-vue'
+import { computed, reactive, ref } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/useUserStore';
+import Card from './Card.vue';
+import APIController from '@/services/api/API.communicate';
+import { message } from 'ant-design-vue';
 
-declare const grecaptcha: any
+declare const grecaptcha: any;
 
-const router = useRouter()
-const userStore = useUserStore()
+const router = useRouter();
+const userStore = useUserStore();
 
-const open = ref(false)
-const showError = ref(false)
-const errorMessage = ref('')
-const showPassword = ref(false)
-const isSubmitting = ref(false)
+const open = ref(false);
+const showError = ref(false);
+const errorMessage = ref('');
+const showPassword = ref(false);
+const isSubmitting = ref(false);
 
 interface FormState {
-  username: string
-  password: string
-  remember: boolean
+  username: string;
+  password: string;
+  remember: boolean;
 }
 
 const formState = reactive<FormState>({
   username: '',
   password: '',
   remember: true,
-})
+});
 
 const usernameError = computed(() => {
-  if (!formState.username) return ''
+  if (!formState.username) return '';
+
   if (!/^[A-Za-z0-9]+$/.test(formState.username)) {
-    return 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed'
+    return 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed';
   }
-  return ''
-})
+
+  return '';
+});
 
 const passwordError = computed(() => {
-  if (!formState.password) return ''
+  if (!formState.password) return '';
+
   if (!/^[A-Za-z0-9]+$/.test(formState.password)) {
-    return 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed'
+    return 'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed';
   }
-  return ''
-})
+
+  return '';
+});
 
 const disabled = computed(() => {
-  return !formState.username || !formState.password || !!usernameError.value || !!passwordError.value
-})
+  return (
+    !formState.username ||
+    !formState.password ||
+    !!usernameError.value ||
+    !!passwordError.value
+  );
+});
 
 async function onSubmit() {
-  if (disabled.value || isSubmitting.value) return
+  if (disabled.value || isSubmitting.value) return;
 
-  isSubmitting.value = true
-  showError.value = false
-  errorMessage.value = ''
+  isSubmitting.value = true;
+  showError.value = false;
+  errorMessage.value = '';
 
-    try {
-      await grecaptcha.ready(async () => {
-        const token = await grecaptcha.execute(
-          import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-          { action: 'login' }
-        )
+  let recaptchaToken = '';
 
-        await APIController.sendRequest('verifyRecaptcha', 'POST', {
-          response: token,
-        })
-      })
-    } catch (error: any) {
-      message.error(error?.data?.message || 'Recaptcha verification failed.', 30)
-      isSubmitting.value = false
-      return
-    }
-
+  try {
+    await grecaptcha.ready(async () => {
+      recaptchaToken = await grecaptcha.execute(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        { action: 'login' }
+      );
+    });
+  } catch (error: any) {
+    showError.value = true;
+    errorMessage.value = 'Recaptcha verification failed.';
+    message.error(errorMessage.value, 30);
+    isSubmitting.value = false;
+    return;
+  }
 
   try {
     const login: any = await APIController.sendRequest('login', 'POST', {
       login: formState.username,
       password: formState.password,
-    })
+      recaptchaToken,
+    });
 
-    userStore.loggedUser.token = login.access_token
-    userStore.loggedUser.userInfo = login.accountInfo
-    userStore.loggedUser.login = true
+    userStore.loggedUser.token = login.access_token;
+    userStore.loggedUser.userInfo = login.accountInfo;
+    userStore.loggedUser.login = true;
 
-    const queryString = window.location.search
-    const urlParams = new URLSearchParams(queryString)
-    const hash = urlParams.get('hash')
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const hash = urlParams.get('hash');
 
     if (hash) {
-      router.push(`/dashboard?hash=${hash}`)
+      router.push(`/dashboard?hash=${hash}`);
     } else {
-      router.push('/dashboard')
+      router.push('/dashboard');
     }
   } catch (error: any) {
-    console.log(error)
-    showError.value = true
-    errorMessage.value = error?.data?.message || 'Παρουσιάστηκε πρόβλημα κατά τη σύνδεση.'
-    message.error(error?.data?.message || 'Login failed.', 30)
+    console.log(error);
+    showError.value = true;
+    errorMessage.value =
+      error?.data?.message || 'Παρουσιάστηκε πρόβλημα κατά τη σύνδεση.';
+    message.error(errorMessage.value, 30);
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
 }
 
 const showModal = () => {
-  open.value = true
-}
+  open.value = true;
+};
 
 const handleOk = () => {
-  open.value = false
-}
+  open.value = false;
+};
 
 function logout() {
-  userStore.clearLoggedUser()
-  router.push('/')
+  userStore.clearLoggedUser();
+  router.push('/');
 }
 </script>
 
