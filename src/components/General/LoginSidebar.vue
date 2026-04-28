@@ -200,7 +200,7 @@
         </div>
 
         <!-- Account menu -->
-        <div class="space-y-2">
+        <div class="space-y-2 ">
           <RouterLink
             v-if="userStore.getUser && userStore.getUser.isAdmin"
             to="/admin-panel"
@@ -214,7 +214,7 @@
           </RouterLink>
 
           <a
-            href="https://itemshop.aeolus2.eu/"
+            href="https://itemshop.reventon.gr/"
             target="_blank"
             rel="noopener noreferrer"
             class="sidebar-link"
@@ -226,7 +226,7 @@
             Χαρακτήρες
           </RouterLink>
 
-          <RouterLink to="/account-handeling" class="sidebar-link">
+          <RouterLink to="/account-handeling" class="sidebar-link ">
             Αλλαγή στοιχείων λογαριασμού
           </RouterLink>
 
@@ -251,7 +251,7 @@
       class="relative w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-slate-950 shadow-2xl"
     >
       <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
-        <h3 class="text-lg font-semibold text-white">Asceo2 Shop</h3>
+        <h3 class="text-lg font-semibold text-white">Reventon Shop</h3>
         <button
           type="button"
           @click="handleOk"
@@ -266,7 +266,7 @@
         data-tf-redirect-target="_self"
         frameborder="0"
         allowfullscreen
-        src="https://asceo2.eu/itemshop/"
+        src="https://itemshop.reventon.gr/"
       ></iframe>
     </div>
   </div>
@@ -330,20 +330,23 @@ async function onSubmit() {
   showError.value = false
   errorMessage.value = ''
 
-  try {
-    const token = await grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {
-      action: 'login',
-    })
+    try {
+      await grecaptcha.ready(async () => {
+        const token = await grecaptcha.execute(
+          import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+          { action: 'login' }
+        )
 
-    await APIController.sendRequest('verifyRecaptcha', 'POST', {
-      secret: import.meta.env.VITE_RECAPTCHA_SECRET_KEY,
-      response: token,
-    })
-  } catch (error: any) {
-    message.error(error?.data?.message || 'Recaptcha verification failed.', 30)
-    isSubmitting.value = false
-    return
-  }
+        await APIController.sendRequest('verifyRecaptcha', 'POST', {
+          response: token,
+        })
+      })
+    } catch (error: any) {
+      message.error(error?.data?.message || 'Recaptcha verification failed.', 30)
+      isSubmitting.value = false
+      return
+    }
+
 
   try {
     const login: any = await APIController.sendRequest('login', 'POST', {
@@ -398,12 +401,12 @@ function logout() {
   padding: 0.9rem 1rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: rgb(226 232 240);
+  color: rgb(0, 0, 0);
   transition: all 0.2s ease;
 }
 
 .sidebar-link:hover {
-  background: rgb(255 255 255 / 0.08);
-  color: white;
+  background: rgba(63, 52, 52, 0.08);
+  color: rgb(131, 126, 126);
 }
 </style>

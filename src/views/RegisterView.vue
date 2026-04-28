@@ -274,7 +274,9 @@
 
         
         <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-          <a-button type="primary" html-type="submit">{{t('SUBMIT')}}</a-button>
+          <a-button type="primary" html-type="submit" :loading="isSubmitting" :disabled="isSubmitting">
+  {{ isSubmitting ? 'Παρακαλώ περιμένετε...' : t('SUBMIT') }}
+</a-button>
         </a-form-item>
       </a-form>
     </template>
@@ -289,6 +291,7 @@
 </template>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
+import { message } from 'ant-design-vue';
 import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
@@ -297,6 +300,9 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 const { t, locale } = useI18n()
 const router = useRouter();
+declare const grecaptcha: any
+
+const isSubmitting = ref(false);
 
 const userStore = useUserStore();
 const layout = {
@@ -321,49 +327,71 @@ const successResponse = ref('');
 const errorResponse = ref('');
 const serverSettings = ref<any>(null);
 
-const onFinish = (values: any) => {
+const onFinish = async () => {
+  if (isSubmitting.value) return;
+
   successResponse.value = '';
   errorResponse.value = '';
+  isSubmitting.value = true;
 
-  APIController.sendRequest('create', 'POST', formState)
-    .then(async (res: any) => {
+  try {
+    await grecaptcha.ready(async () => {
+      const token = await grecaptcha.execute(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        { action: 'register' }
+      );
 
-      try {
-      const login: any = await APIController.sendRequest("login", "POST", {
+      await APIController.sendRequest('verifyRecaptcha', 'POST', {
+        response: token,
+      });
+    });
+  } catch (error: any) {
+    message.error(error?.data?.message || 'Recaptcha verification failed.', 30);
+    errorResponse.value = error?.data?.message || 'Recaptcha verification failed.';
+    isSubmitting.value = false;
+    return;
+  }
+
+  try {
+    const res: any = await APIController.sendRequest('create', 'POST', formState);
+
+    successResponse.value = res.message;
+
+    try {
+      const login: any = await APIController.sendRequest('login', 'POST', {
         login: formState.login,
         password: formState.password,
       });
-      setTimeout(() => { 
+
+      setTimeout(() => {
         userStore.loggedUser.token = login.access_token;
         userStore.loggedUser.userInfo = login.accountInfo;
         userStore.loggedUser.login = true;
-        router.push('/dashboard')
-      }, 5000)
-
-    } catch (error) {
+        router.push('/dashboard');
+      }, 5000);
+    } catch (error: any) {
       console.log(error);
-      errorResponse.value = error.data.message;
+      errorResponse.value = error?.data?.message || 'Auto login failed.';
     }
 
-     formState.login = '';
-      formState.email = '';
-      formState.password = '';
-      formState.repeatPassword = '';
-      formState.real_name = '';
-      formState.social_id = '';
-      formState.question1 = '1';
-      formState.answer1 = '';
-      formState.repeatEmail = '';
-      successResponse.value = res.message;
-
-
-    })
-    .catch((err) => {
-      console.log(err);
-      errorResponse.value = err.data.message;
-    });
+    formState.login = '';
+    formState.email = '';
+    formState.password = '';
+    formState.repeatPassword = '';
+    formState.real_name = '';
+    formState.social_id = '';
+    formState.question1 = '1';
+    formState.answer1 = '';
+    formState.repeatEmail = '';
+    formState.termsOfService = false;
+  } catch (err: any) {
+    console.log(err);
+    errorResponse.value = err?.data?.message || 'Register failed.';
+    message.error(errorResponse.value, 30);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
-
 const checkTermsOfService = (rule: any, value: boolean) => {
   if (!value) {
     return Promise.reject('Accept our terms of service to create your account');
