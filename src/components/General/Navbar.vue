@@ -168,7 +168,7 @@
         </a>
 
         <a
-          href="https://discord.com/"
+          href="https://discord.gg/UvsUkY2Czr"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-indigo-500/20 hover:text-indigo-300"
