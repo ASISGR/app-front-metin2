@@ -1,73 +1,120 @@
 <template>
-  <Card title="ΛΉΨΗ ΠΑΙΧΝΙΔΙΟΎ">
+  <Card :title="t('DOWNLOAD_GAME_TITLE')">
     <template #content>
       <a-space>
-
-        <a-button v-for="(download, key)  in downloadLinks"  :disabled="!download.downloadUrl" target="_blank" :href="download.downloadUrl" type="primary" :key="key" :size="size">
+        <a-button
+          v-for="(download, key) in downloadLinks"
+          :key="key"
+          :disabled="!download.downloadUrl"
+          target="_blank"
+          :href="download.downloadUrl"
+          type="primary"
+          :size="size"
+        >
           <template #icon>
             <DownloadOutlined />
           </template>
           {{ download.name }}
         </a-button>
       </a-space>
+
       <br />
       <br />
-      <a-descriptions title="Ελάχιστες απαιτήσεις συστήματος" bordered>
-        <a-descriptions-item label="Λειτουργικό Σύστημα (O.S.)"
-          >Windows: 2000, XP, 2003, Vista, 7, 8, 8.1, 10, 11</a-descriptions-item
-        >
-        <a-descriptions-item label="CPU">Pentium 3 1GHz</a-descriptions-item>
-        <a-descriptions-item label="Μνήμη">512 MB</a-descriptions-item>
-        <a-descriptions-item label="Σκληρός δίσκος">2 GB</a-descriptions-item>
-        <a-descriptions-item label="Κάρτα γραφικών"
-          >Κάρτα γραφικών μεγαλύτερη από 64MB RAM</a-descriptions-item
-        >
-        <a-descriptions-item label="Κάρτα ήχου"
-          >Υποστήριξη DirectX 9.0</a-descriptions-item
-        >
-        <a-descriptions-item label="Ποντίκι"
-          >Ποντίκι συμβατό με τα Windows</a-descriptions-item
-        >
+
+      <a-descriptions :title="t('MINIMUM_SYSTEM_REQUIREMENTS')" bordered>
+        <a-descriptions-item :label="t('OPERATING_SYSTEM')">
+          Windows: 2000, XP, 2003, Vista, 7, 8, 8.1, 10, 11
+        </a-descriptions-item>
+
+        <a-descriptions-item label="CPU">
+          Pentium 3 1GHz
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('MEMORY')">
+          512 MB
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('HARD_DISK')">
+          2 GB
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('GRAPHICS_CARD')">
+          {{ t('MIN_GRAPHICS_CARD_VALUE') }}
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('SOUND_CARD')">
+          {{ t('DIRECTX_9_SUPPORT') }}
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('MOUSE')">
+          {{ t('WINDOWS_COMPATIBLE_MOUSE') }}
+        </a-descriptions-item>
       </a-descriptions>
+
       <br />
       <br />
-      <a-descriptions title="Συνιστώμενες Λειτουργίες Συστήματος" bordered>
-        <a-descriptions-item label="Λειτουργικό Σύστημα (O.S.)"
-          >Windows: 7, 8, 8.1, 10.</a-descriptions-item
-        >
-        <a-descriptions-item label="CPU">Pentium 3 1GHz</a-descriptions-item>
-        <a-descriptions-item label="Μνήμη">1GB RAM</a-descriptions-item>
-        <a-descriptions-item label="Σκληρός δίσκος">50 GB</a-descriptions-item>
-        <a-descriptions-item label="Κάρτα γραφικών"
-          >Κάρτα γραφικών μεγαλύτερη από 1GB RAM</a-descriptions-item
-        >
-        <a-descriptions-item label="Κάρτα ήχου"
-          >Υποστήριξη DirectX 9.0</a-descriptions-item
-        >
-        <a-descriptions-item label="Ποντίκι"
-          >Ποντίκι συμβατό με τα Windows</a-descriptions-item
-        >
+
+      <a-descriptions :title="t('RECOMMENDED_SYSTEM_REQUIREMENTS')" bordered>
+        <a-descriptions-item :label="t('OPERATING_SYSTEM')">
+          Windows: 7, 8, 8.1, 10
+        </a-descriptions-item>
+
+        <a-descriptions-item label="CPU">
+          Pentium 3 1GHz
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('MEMORY')">
+          1GB RAM
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('HARD_DISK')">
+          50 GB
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('GRAPHICS_CARD')">
+          {{ t('REC_GRAPHICS_CARD_VALUE') }}
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('SOUND_CARD')">
+          {{ t('DIRECTX_9_SUPPORT') }}
+        </a-descriptions-item>
+
+        <a-descriptions-item :label="t('MOUSE')">
+          {{ t('WINDOWS_COMPATIBLE_MOUSE') }}
+        </a-descriptions-item>
       </a-descriptions>
     </template>
   </Card>
 </template>
+
 <script lang="ts" setup>
-import Card from '@/components/General/Card.vue';
+import { ref, onMounted } from 'vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
 import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
+
+interface DownloadLink {
+  name: string;
+  downloadUrl: string;
+}
+
+const { t } = useI18n();
+
 const size = ref<SizeType>('large');
+const downloadLinks = ref<DownloadLink[]>([]);
 
-const downloadLinks = ref([]);
-
-onMounted(() => { 
-APIController.sendRequest('settings-status','GET').then((response:any) => {
-  downloadLinks.value = response.downloadLinks;
-}).catch((err:any) => {
-  console.log(err)
-})
-})
-
+onMounted(() => {
+  APIController.sendRequest('settings-status', 'GET')
+    .then((response: any) => {
+      downloadLinks.value = response.downloadLinks || [];
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
+});
 </script>
+
 <style scoped></style>

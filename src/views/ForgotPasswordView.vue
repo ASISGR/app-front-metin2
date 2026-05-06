@@ -1,27 +1,20 @@
 <template>
-  <Card title="ΕΠΑΝΑΦΟΡΆ ΛΟΓΑΡΙΑΣΜΟΎ">
+  <Card :title="t('ACCOUNT_RESET_TITLE')">
     <template #content>
       <a-form
         :model="formState"
         v-bind="layout"
-        name="nest-messages"
+        name="account-reset-form"
         @finish="onFinish"
       >
         <a-form-item
-          label="Username"
+          :label="t('REGISTER_USERNAME')"
           :name="['login']"
           :rules="[
-            { required: true, message: 'Please input your username!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 5,
-              message: 'Username must be at least 5 characters long',
-            },
-            { max: 16, message: 'Username cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_USERNAME_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 5, message: t('VALIDATION_USERNAME_MIN') },
+            { max: 16, message: t('VALIDATION_USERNAME_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.login">
@@ -32,21 +25,14 @@
         </a-form-item>
 
         <a-form-item
+          :label="t('REGISTER_EMAIL')"
           :name="['email']"
-          label="Email"
           :rules="[
-            { type: 'email' },
-            { required: true, message: 'Please input your email!' },
-            {
-              pattern: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`,
-              message:
-                'Invalid email format. Please enter a valid email address',
-            },
-            {
-              min: 10,
-              message: 'Email must be at least 10 characters long',
-            },
-            { max: 50, message: 'Email cannot exceed 50 characters' },
+            { type: 'email', message: t('VALIDATION_INVALID_EMAIL') },
+            { required: true, message: t('VALIDATION_EMAIL_REQUIRED') },
+            { pattern: emailPattern, message: t('VALIDATION_INVALID_EMAIL') },
+            { min: 10, message: t('VALIDATION_EMAIL_MIN') },
+            { max: 50, message: t('VALIDATION_EMAIL_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.email">
@@ -57,20 +43,33 @@
         </a-form-item>
 
         <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-          <a-button type="primary" html-type="submit">Αποστολή</a-button>
+          <a-button type="primary" html-type="submit">
+            {{ t('SUBMIT') }}
+          </a-button>
         </a-form-item>
       </a-form>
-    </template></Card
-  >
+    </template>
+  </Card>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, onMounted } from 'vue';
+import { message } from 'ant-design-vue';
+import { UserOutlined, MailOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
 
 import Card from '@/components/General/Card.vue';
-import { UserOutlined, MailOutlined } from '@ant-design/icons-vue';
 import APIController from '@/services/api/API.communicate';
-import { message } from 'ant-design-vue';
+
+const { t } = useI18n();
+
+const alnumPattern = /^[A-Za-z0-9]+$/;
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 8 },
+};
 
 const formState = reactive({
   login: '',
@@ -85,28 +84,23 @@ const onFinish = (values: any) => {
     .then((res: any) => {
       message.success(res.message, 30);
     })
-    .catch((err) => {
-      message.error(err.data.message, 30);
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'), 30);
     });
-};
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 8 },
 };
 
 onMounted(() => {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
+  const urlParams = new URLSearchParams(window.location.search);
   const hash = urlParams.get('rhash');
 
-  if (hash) {
-    APIController.sendRequest('reset-password', 'POST', { hash: hash })
-      .then((res: any) => {
-        message.success(res.message, 30);
-      })
-      .catch((err: any) => {
-        message.error(err.data.message, 30);
-      });
-  }
+  if (!hash) return;
+
+  APIController.sendRequest('reset-password', 'POST', { hash })
+    .then((res: any) => {
+      message.success(res.message, 30);
+    })
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'), 30);
+    });
 });
 </script>

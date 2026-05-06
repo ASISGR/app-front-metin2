@@ -1,57 +1,44 @@
 <template>
-  <Card title="ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟΝ REVENTON METIN2!">
-  <template #content>
-    Παίκτες του Metin2,
+  <Card :title="t('WELCOME_TITLE')">
+    <template #content>
+      <div class="welcome-content">
+      <p>{{ t('WELCOME_LINE_1') }}</p>
+       {{ t('WELCOME_LINE_2') }}
+       {{ t('WELCOME_LINE_3') }}
+       {{ t('WELCOME_LINE_4') }}
+       {{ t('WELCOME_LINE_5') }}
+       {{ t('WELCOME_LINE_6') }}
 
-    Ο Reventon επιστρέφει.
+        <ul>
+          <li>{{ t('WELCOME_FEATURE_1') }}</li>
+          <li>{{ t('WELCOME_FEATURE_2') }}</li>
+          <li>{{ t('WELCOME_FEATURE_3') }}</li>
+          <li>{{ t('WELCOME_FEATURE_4') }}</li>
+          <li>{{ t('WELCOME_FEATURE_5') }}</li>
+        </ul>
 
-    Χωρίς υπερβολές. Χωρίς περιττά συστήματα. Χωρίς να αλλοιώνει αυτό που πραγματικά αγαπήσαμε.
+      <p> {{ t('WELCOME_LINE_7') }}
+       {{ t('WELCOME_LINE_8') }}
+       {{ t('WELCOME_LINE_9') }}
+       {{ t('WELCOME_LINE_10') }}
+       {{ t('WELCOME_LINE_11') }}
+       {{ t('WELCOME_LINE_12') }}
+       {{ t('WELCOME_LINE_13') }}
+       {{ t('WELCOME_LINE_14') }}
+       {{ t('WELCOME_LINE_15') }}</p>
+      </div>
+    </template>
+  </Card>
 
-    Ένας καθαρός newschool server, σχεδιασμένος για όσους θυμούνται πώς ήταν το Metin2 στις καλύτερές του στιγμές.
-    Τα πρώτα farms, τα πρώτα duels, τις μάχες στα metin και τις ατελείωτες ώρες grind με την παρέα.
-
-    Ο στόχος μας είναι ένας:
-    να ξαναζήσουμε αυτή την εμπειρία με τον σωστό τρόπο.
-
-   <br>
-   <br>
-    <ul>
-      <li> • Κλασικό gameplay χωρίς περιττές προσθήκες.</li>
-      <li> • PvP που βασίζεται στο skill και όχι στα υπερβολικά bonuses.</li>
-      <li> • Απλό, καθαρό και ισορροπημένο progression.</li>
-      <li> • Guild wars, rivalries και αληθινός ανταγωνισμός.</li>
-      <li> • Ελληνική κοινότητα με την ατμόσφαιρα των παλιών εποχών.</li>
-    </ul>
-    <br>
-
-    Εδώ δεν θα βρεις εύκολες λύσεις.
-    Θα βρεις τον ίδιο δρόμο που κάποτε περάσαμε όλοι.
-
-    Κάθε level μετράει.
-    Κάθε αντικείμενο έχει αξία.
-    Κάθε μάχη έχει σημασία.
-
-    Αν ήσουν εκεί, ξέρεις ήδη τι σημαίνει αυτό.
-
-    Αν δεν ήσουν, τώρα είναι η στιγμή να το ζήσεις.
-   <br>
-   <br>
-
-    Ο κόσμος του Reventon άνοιξε ξανά.
-
-    Εσύ θα λείπεις;
-  </template>
-</Card>
-
-  <Card title="ΓΕΝΙΚΉ ΚΑΤΆΤΑΞΗ ΒΑΘΜΟΛΩΓΙΏΝ ΑΝΩΤΈΡΩΝ">
+  <Card :title="t('TOP_RANKING_GENERAL_TITLE')">
     <template #content>
       <a-tabs v-model:activeKey="activeKey" centered>
-        <a-tab-pane key="1" tab="ΧΑΡΑΚΤΉΡΕΣ">
-          <Ranking :columns="charTableColumns" :data="characters"></Ranking>
+        <a-tab-pane key="1" :tab="t('CHARACTER_LIST')">
+          <Ranking :columns="charTableColumns" :data="characters" />
         </a-tab-pane>
 
-        <a-tab-pane key="2" tab="ΣΥΝΤΕΧΝΊΕΣ">
-          <Ranking :columns="guildTableColumns" :data="guilds"></Ranking>
+        <a-tab-pane key="2" :tab="t('GUILD_LIST')">
+          <Ranking :columns="guildTableColumns" :data="guilds" />
         </a-tab-pane>
       </a-tabs>
     </template>
@@ -59,60 +46,59 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import Ranking from '@/components/Home/Ranking.vue';
 import API from '@/services/api/API.communicate';
-import { onMounted, ref } from 'vue';
 import Card from '@/components/General/Card.vue';
 
+const { t } = useI18n();
 
 const activeKey = ref('1');
 
-const charTableColumns = ref([
-  { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'player_name', dataIndex: 'player_name' },
-  { title: 'Επίπεδο', key: 'player_level', dataIndex: 'player_level' },
+const charTableColumns = computed(() => [
+  { title: t('RANK_POSITION'), key: 'index', dataIndex: 'index' },
+  { title: t('NAME'), key: 'player_name', dataIndex: 'player_name' },
+  { title: t('LEVEL'), key: 'player_level', dataIndex: 'player_level' },
   {
-    title: 'Αποστολές',
+    title: t('QUESTS'),
     key: 'highest_collect_quest_lv',
     dataIndex: 'highest_collect_quest_lv',
   },
 ]);
 
-const guildTableColumns = ref([
-  { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'guild_name', dataIndex: 'guild_name' },
-  { title: 'Επίπεδο', key: 'guild_level', dataIndex: 'guild_level' },
-  { title: 'Πόντοι', key: 'guild_ladder_point', dataIndex: 'guild_ladder_point' },
+const guildTableColumns = computed(() => [
+  { title: t('RANK_POSITION'), key: 'index', dataIndex: 'index' },
+  { title: t('NAME'), key: 'guild_name', dataIndex: 'guild_name' },
+  { title: t('LEVEL'), key: 'guild_level', dataIndex: 'guild_level' },
+  { title: t('POINTS'), key: 'guild_ladder_point', dataIndex: 'guild_ladder_point' },
 ]);
 
-interface top10PlayersInterface {
+interface Top10PlayersInterface {
   player_name: string;
   player_playtime: string;
-  player_level: number,
-  player_exp: string,
-  player_horse_level :number,
-  playerIndex_empire: number,
-  playerGuild_name: null | string,
-  highest_collect_quest_lv: null|string,
-  index: number
-
+  player_level: number;
+  player_exp: string;
+  player_horse_level: number;
+  playerIndex_empire: number;
+  playerGuild_name: null | string;
+  highest_collect_quest_lv: null | string;
+  index: number;
 }
 
-interface top10GuildsInterface {
+interface Top10GuildsInterface {
   guild_name: string;
-  
-  guild_level: number,
-  player_exp: string,
-  guild_ladder_point :string,
-  playerLeader_name: string,
-  playerIndex_empire: number,
-  index: number
-
+  guild_level: number;
+  player_exp: string;
+  guild_ladder_point: string;
+  playerLeader_name: string;
+  playerIndex_empire: number;
+  index: number;
 }
 
-const characters = ref<top10PlayersInterface[]>([]);
-const guilds = ref<top10GuildsInterface[]>([]);
-
+const characters = ref<Top10PlayersInterface[]>([]);
+const guilds = ref<Top10GuildsInterface[]>([]);
 
 onMounted(() => {
   API.sendRequest('top10Ranks', 'GET')
@@ -120,8 +106,24 @@ onMounted(() => {
       characters.value = response.top10Players;
       guilds.value = response.top10Guilds;
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.log(`Error API ${err}`);
     });
 });
 </script>
+
+<style scoped>
+.welcome-content p {
+  margin-bottom: 12px;
+}
+
+.welcome-content ul {
+  margin: 18px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.welcome-content li {
+  margin-bottom: 8px;
+}
+</style>

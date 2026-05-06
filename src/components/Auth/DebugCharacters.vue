@@ -1,17 +1,17 @@
 <template>
-  <Card title="ΚΑΡΤΈΛΑ ΕΠΑΝΑΦΟΡΆΣ ΧΑΡΑΚΤΗΡΏΝ - (DEBUG)">
+  <Card :title="t('CHARACTER_DEBUG_TITLE')">
     <template #content>
-      <!-- Information About Debug-->
       <a-collapse v-model:activeKey="activeKey">
         <a-collapse-panel
           key="1"
-          header="Πως λειτουργεί η επαναφορά χαρακτήρα;"
+          :header="t('CHARACTER_DEBUG_INFO_TITLE')"
         >
-          <p>{{ text }}</p>
+          <p>{{ t('CHARACTER_DEBUG_INFO_TEXT') }}</p>
         </a-collapse-panel>
       </a-collapse>
+
       <br />
-      <!---->
+
       <a-form
         :model="formState"
         :label-col="labelCol"
@@ -19,92 +19,91 @@
         @finish="onFinish"
       >
         <a-form-item
-          label="Χαρακτήρας προς επαναφορά"
+          :label="t('CHARACTER_TO_DEBUG')"
           :name="['selectedCharacter']"
           :rules="[
-            { required: true, message: 'Please input your selectedCharacter!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
+            { required: true, message: t('VALIDATION_CHARACTER_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
           ]"
         >
           <a-select
             v-model:value="formState.selectedCharacter"
-            placeholder="Επιλέξτε χαρατήρα"
+            :placeholder="t('SELECT_CHARACTER')"
           >
             <a-select-option
-              v-for="(playerName, index) of formState.characters"
-              :value="playerName"
+              v-for="(playerName, index) in formState.characters"
               :key="index"
-              >{{ playerName }}</a-select-option
+              :value="playerName"
             >
+              {{ playerName }}
+            </a-select-option>
           </a-select>
         </a-form-item>
+
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-          <a-button type="primary" html-type="submit">Επαναφορά</a-button>
+          <a-button type="primary" html-type="submit">
+            {{ t('CHARACTER_DEBUG_SUBMIT') }}
+          </a-button>
         </a-form-item>
       </a-form>
     </template>
   </Card>
 </template>
+
 <script lang="ts" setup>
+import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
+import { useI18n } from 'vue-i18n';
+
 import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
-import { useRouter } from 'vue-router';
-import { onMounted, reactive, ref } from 'vue';
-import { message } from 'ant-design-vue';
 
+const { t } = useI18n();
 const userStore = useUserStore();
-const route = useRouter();
+const router = useRouter();
+
+const alnumPattern = /^[A-Za-z0-9]+$/;
 
 const labelCol = { span: 4 };
 const wrapperCol = { span: 14 };
 
+const activeKey = ref(['1']);
+
 const formState = reactive({
-  characters: userStore.getUser?.players,
+  characters: userStore.getUser?.players || [],
   selectedCharacter: undefined,
 });
 
-const text = `Η επαναφορά χαρακτήρα στο Reventon σου επιτρέπει να ξεκολλήσεις τον χαρακτήρα σου όταν κολλήσει σε έναν χάρτη. Πάτα "Επαναφορά" και μετά "Μεταφορά" για να τον απελευθερώσεις και να μετακινηθείς σε ασφαλές σημείο στον πρώτο χάρτη. Περίμενε 15 λεπτά πριν συνδεθείς στον χαρακτήρα σου.`;
-const activeKey = ref(['1']);
-
 const onFinish = (values: any) => {
-  // map 1 SHINSOO
-  // map 2 CHUNJO
-  // map 3 JINNO
   const empire = userStore.getUser?.empire;
 
   APIController.sendRequest('debug-character', 'POST', {
     playerName: values.selectedCharacter,
-    empire: empire,
+    empire,
   })
     .then((response: any) => {
-      console.log(response);
       message.success(response.message);
     })
-    .catch((err) => {
-      message.error(err.data.message);
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'));
     });
 };
 
 onMounted(() => {
   if (!userStore.isLogged) {
-    route.push('/');
-    return 0;
-
+    router.push('/');
   }
 });
-
 </script>
+
 <style scoped>
 .error-message {
   color: #cc0033;
   font-size: 12px;
   line-height: 15px;
-  margin: 5px 0px 0;
+  margin: 5px 0 0;
   align-self: flex-end;
 }
 </style>

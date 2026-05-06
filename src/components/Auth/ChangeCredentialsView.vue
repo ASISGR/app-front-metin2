@@ -1,7 +1,6 @@
 <template>
- 
-  <Card :title=getChangeCredentialsTitle()>
-    <template #content> 
+  <Card :title="t('CREDENTIALS_CHANGE')">
+    <template #content>
       <a-form
         :model="formState"
         :label-col="labelCol"
@@ -9,22 +8,14 @@
         name="change-credentials"
         @finish="onFinish"
       >
-
-      <a-form-item
-          :label=getChangeCredentialsCurrentP()
+        <a-form-item
+          :label="t('CREDENTIALS_CURRENT_PASSWORD')"
           :name="['oldPassword']"
           :rules="[
-            { required: true, message: 'Please input your current password!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 6,
-              message: 'Password must be at least 6 characters long',
-            },
-            { max: 16, message: 'Password cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_CURRENT_PASSWORD_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 6, message: t('VALIDATION_PASSWORD_MIN') },
+            { max: 16, message: t('VALIDATION_PASSWORD_MAX') },
           ]"
         >
           <a-input-password v-model:value.trim="formState.oldPassword">
@@ -35,20 +26,13 @@
         </a-form-item>
 
         <a-form-item
-        :label=getChangeCredentialsNewP()
+          :label="t('CREDENTIALS_NEW_PASSWORD')"
           :name="['newPassword']"
           :rules="[
-            { required: true, message: 'Please input your password!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 6,
-              message: 'Password must be at least 6 characters long',
-            },
-            { max: 16, message: 'Password cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_PASSWORD_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 6, message: t('VALIDATION_PASSWORD_MIN') },
+            { max: 16, message: t('VALIDATION_PASSWORD_MAX') },
           ]"
         >
           <a-input-password v-model:value.trim="formState.newPassword">
@@ -59,22 +43,14 @@
         </a-form-item>
 
         <a-form-item
-        :label=getChangeCredentialsRepeatNewP()
+          :label="t('CREDENTIALS_REPEAT_NEW_PASSWORD')"
           :name="['repeatNewPassword']"
           :rules="[
             { trigger: 'change', validator: passwordRepeatValidation },
-
-            { required: true, message: 'Please repeat your password!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 6,
-              message: 'Repeat password must be at least 6 characters long',
-            },
-            { max: 16, message: 'Repeat password cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_PASSWORD_REPEAT_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 6, message: t('VALIDATION_REPEAT_PASSWORD_MIN') },
+            { max: 16, message: t('VALIDATION_REPEAT_PASSWORD_MAX') },
           ]"
         >
           <a-input-password v-model:value.trim="formState.repeatNewPassword">
@@ -84,35 +60,35 @@
           </a-input-password>
         </a-form-item>
 
-      
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-          <a-button type="primary" html-type="submit">{{ t('SUBMIT') }}</a-button>
+          <a-button type="primary" html-type="submit">
+            {{ t('SUBMIT') }}
+          </a-button>
         </a-form-item>
       </a-form>
-
     </template>
   </Card>
 </template>
+
 <script lang="ts" setup>
+import { onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
+import { LockOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
+
 import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
-import { useRouter } from 'vue-router';
-import { onMounted, reactive, ref } from 'vue';
-import { message } from 'ant-design-vue';
-import {
-  LockOutlined,
-} from '@ant-design/icons-vue';
-import { useI18n } from 'vue-i18n';
-const { t, locale } = useI18n()
 
+const { t } = useI18n();
 const userStore = useUserStore();
-const route = useRouter();
+const router = useRouter();
+
+const alnumPattern = /^[A-Za-z0-9]+$/;
 
 const labelCol = { span: 4 };
 const wrapperCol = { span: 14 };
-
-
 
 interface FormState {
   oldPassword: string;
@@ -126,8 +102,7 @@ const formState = reactive<FormState>({
   repeatNewPassword: '',
 });
 
-const onFinish = (values: any) => {
-
+const onFinish = () => {
   APIController.sendRequest('change-user-password', 'POST', {
     previousPassword: formState.oldPassword,
     updatePassword: formState.newPassword,
@@ -135,45 +110,22 @@ const onFinish = (values: any) => {
     .then((response: any) => {
       message.success(response.message);
     })
-    .catch((err) => {
-      message.error(err.data.message);
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'));
     });
 };
 
-const passwordRepeatValidation = (rule: any, value: string) => {
+const passwordRepeatValidation = (_rule: any, value: string) => {
   if (value !== formState.newPassword) {
-    return Promise.reject("New password and Repeat new Password does not match.");
+    return Promise.reject(t('VALIDATION_NEW_PASSWORD_MATCH'));
   }
+
   return Promise.resolve();
 };
 
 onMounted(() => {
   if (!userStore.isLogged) {
-    route.push('/');
-    return 0;
+    router.push('/');
   }
 });
-
-function getChangeCredentialsTitle(){
-  return  t('CREDENTIALS_CHANGE') 
-
-}
-
-function getChangeCredentialsCurrentP(){
-  return  t('CREDENTIALS_CURRENT_PASSOWRD') 
-
-}
-
-function getChangeCredentialsNewP(){
-  return  t('CREDENTIALS_NEW_PASSOWRD') 
-
-}
-
-function getChangeCredentialsRepeatNewP(){
-  return  t('CREDENTIALS_REPEAT_NEW_PASSOWRD') 
-
-}
-
-
-
 </script>

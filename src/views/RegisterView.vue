@@ -1,6 +1,5 @@
 <template>
-  <!--serverSettings?.registerStatus && userStore.isLogged === false-->
-  <Card :title="getRegisterTitle()">
+  <Card :title="t('REGISTER')">
     <template
       #content
       v-if="serverSettings?.registerStatus && userStore.isLogged === false"
@@ -9,49 +8,45 @@
         <a-alert
           v-if="serverSettings?.registerEmailActivationStatus"
           closable
-          :message=getInfoTitle()
-          :description=getInfoDescription()
+          :message="t('REGISTER_INFO_NOTES_TITLE')"
+          :description="t('REGISTER_INFO_NOTES')"
           type="info"
           show-icon
         />
+
         <a-alert
           v-if="successResponse"
-          message="Account created!"
+          :message="t('REGISTER_SUCCESS_TITLE')"
           :description="successResponse"
           type="success"
           show-icon
           closable
         />
+
         <a-alert
           v-if="errorResponse"
-          message="Error"
+          :message="t('ERROR')"
           :description="errorResponse"
           type="error"
           show-icon
           closable
         />
       </a-space>
+
       <a-form
         :model="formState"
         v-bind="layout"
-        name="nest-messages"
+        name="register-form"
         @finish="onFinish"
       >
         <a-form-item
-          :label=getUsername()
+          :label="t('REGISTER_USERNAME')"
           :name="['login']"
           :rules="[
-            { required: true, message: 'Please input your username!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 5,
-              message: 'Username must be at least 5 characters long',
-            },
-            { max: 16, message: 'Username cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_USERNAME_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 5, message: t('VALIDATION_USERNAME_MIN') },
+            { max: 16, message: t('VALIDATION_USERNAME_MAX') },
             { trigger: 'change', validator: usernameExistValidation },
           ]"
         >
@@ -63,20 +58,13 @@
         </a-form-item>
 
         <a-form-item
-          :label=getRealname()
+          :label="t('REGISTER_FIRSTNAME')"
           :name="['real_name']"
           :rules="[
-            { required: true, message: 'Please input your real name!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 3,
-              message: 'Real Name must be at least 3 characters long',
-            },
-            { max: 17, message: 'Username cannot exceed 17 characters' },
+            { required: true, message: t('VALIDATION_REALNAME_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 3, message: t('VALIDATION_REALNAME_MIN') },
+            { max: 17, message: t('VALIDATION_REALNAME_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.real_name">
@@ -87,20 +75,13 @@
         </a-form-item>
 
         <a-form-item
-        :label=getPassword()
+          :label="t('REGISTER_PASSWORD')"
           :name="['password']"
           :rules="[
-            { required: true, message: 'Please input your password!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 6,
-              message: 'Password must be at least 6 characters long',
-            },
-            { max: 16, message: 'Password cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_PASSWORD_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 6, message: t('VALIDATION_PASSWORD_MIN') },
+            { max: 16, message: t('VALIDATION_PASSWORD_MAX') },
           ]"
         >
           <a-input-password v-model:value.trim="formState.password">
@@ -111,22 +92,14 @@
         </a-form-item>
 
         <a-form-item
-        :label=getPasswordRepeat()
+          :label="t('REGISTER_PASSWORD_REPEAT')"
           :name="['repeatPassword']"
           :rules="[
             { trigger: 'change', validator: passwordRepeatValidation },
-
-            { required: true, message: 'Please repeat your password!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 6,
-              message: 'Repeat password must be at least 6 characters long',
-            },
-            { max: 16, message: 'Repeat password cannot exceed 16 characters' },
+            { required: true, message: t('VALIDATION_PASSWORD_REPEAT_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 6, message: t('VALIDATION_REPEAT_PASSWORD_MIN') },
+            { max: 16, message: t('VALIDATION_REPEAT_PASSWORD_MAX') },
           ]"
         >
           <a-input-password v-model:value.trim="formState.repeatPassword">
@@ -137,21 +110,14 @@
         </a-form-item>
 
         <a-form-item
+          :label="t('REGISTER_EMAIL')"
           :name="['email']"
-          :label=getEmail()
           :rules="[
-            { type: 'email' },
-            { required: true, message: 'Please input your email!' },
-            {
-              pattern: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`,
-              message:
-                'Invalid email format. Please enter a valid email address',
-            },
-            {
-              min: 10,
-              message: 'Email must be at least 10 characters long',
-            },
-            { max: 50, message: 'Email cannot exceed 50 characters' },
+            { type: 'email', message: t('VALIDATION_INVALID_EMAIL') },
+            { required: true, message: t('VALIDATION_EMAIL_REQUIRED') },
+            { pattern: emailPattern, message: t('VALIDATION_INVALID_EMAIL') },
+            { min: 10, message: t('VALIDATION_EMAIL_MIN') },
+            { max: 50, message: t('VALIDATION_EMAIL_MAX') },
             { trigger: 'change', validator: emailExistValidation },
           ]"
         >
@@ -163,23 +129,15 @@
         </a-form-item>
 
         <a-form-item
-        :label=getEmailRepeat()
-        :name="['repeatEmail']"
-        :rules="[
+          :label="t('REGISTER_EMAIL_REPEAT')"
+          :name="['repeatEmail']"
+          :rules="[
             { trigger: 'change', validator: emailRepeatValidation },
-
-            { type: 'email' },
-            { required: true, message: 'Please repeat your email!' },
-            {
-              pattern: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`,
-              message:
-                'Invalid email format. Please enter a valid email address',
-            },
-            {
-              min: 10,
-              message: 'Email must be at least 10 characters long',
-            },
-            { max: 50, message: 'Email cannot exceed 50 characters' },
+            { type: 'email', message: t('VALIDATION_INVALID_EMAIL') },
+            { required: true, message: t('VALIDATION_EMAIL_REPEAT_REQUIRED') },
+            { pattern: emailPattern, message: t('VALIDATION_INVALID_EMAIL') },
+            { min: 10, message: t('VALIDATION_EMAIL_MIN') },
+            { max: 50, message: t('VALIDATION_EMAIL_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.repeatEmail">
@@ -190,33 +148,36 @@
         </a-form-item>
 
         <a-form-item
-        :label=getSecret()
+          :label="t('REGISTER_SECRET')"
           :name="['question1']"
-          :rules="[{ required: true, message: 'Please select a secret!' }]"
+          :rules="[
+            { required: true, message: t('VALIDATION_SECRET_REQUIRED') },
+          ]"
         >
           <a-select v-model:value="formState.question1">
-            <a-select-option value="1">Όνομα μητέρας</a-select-option>
-            <a-select-option value="2">Αγαπημένη πόλη</a-select-option>
-            <a-select-option value="3">Όνομα κατοικιδίου</a-select-option>
-            <a-select-option value="4">αγαπημένου ήρωα</a-select-option>
+            <a-select-option value="1">
+              {{ t('SECRET_MOTHER_NAME') }}
+            </a-select-option>
+            <a-select-option value="2">
+              {{ t('SECRET_FAVORITE_CITY') }}
+            </a-select-option>
+            <a-select-option value="3">
+              {{ t('SECRET_PET_NAME') }}
+            </a-select-option>
+            <a-select-option value="4">
+              {{ t('SECRET_FAVORITE_HERO') }}
+            </a-select-option>
           </a-select>
         </a-form-item>
 
         <a-form-item
-        :label=getSecretAnswer()
+          :label="t('REGISTER_SECRET_ANSWER')"
           :name="['answer1']"
           :rules="[
-            { required: true, message: 'Please input your secret!' },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 3,
-              message: 'Answer  must be at least 3 characters long',
-            },
-            { max: 50, message: 'Answer cannot exceed 50 characters' },
+            { required: true, message: t('VALIDATION_SECRET_ANSWER_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 3, message: t('VALIDATION_ANSWER_MIN') },
+            { max: 50, message: t('VALIDATION_ANSWER_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.answer1">
@@ -227,27 +188,13 @@
         </a-form-item>
 
         <a-form-item
+          :label="t('REGISTER_DELETE_CODE')"
           :name="['social_id']"
-          :label=getDeleteCode()
           :rules="[
-            {
-              required: true,
-              message: 'Please input your delete character code!',
-            },
-            {
-              pattern: `^[A-Za-z0-9]+$`,
-              message:
-                'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-            },
-            {
-              min: 7,
-              message:
-                'Delete character code  must be at least 7 characters long',
-            },
-            {
-              max: 7,
-              message: 'Delete character code cannot exceed 7 characters',
-            },
+            { required: true, message: t('VALIDATION_DELETE_CODE_REQUIRED') },
+            { pattern: alnumPattern, message: t('VALIDATION_ONLY_ALNUM') },
+            { min: 7, message: t('VALIDATION_DELETE_CODE_MIN') },
+            { max: 7, message: t('VALIDATION_DELETE_CODE_MAX') },
           ]"
         >
           <a-input v-model:value.trim="formState.social_id">
@@ -268,43 +215,63 @@
           :wrapper-col="{ offset: 8, span: 8 }"
         >
           <a-checkbox v-model:checked="formState.termsOfService">
-            {{ t('AGREE_TERMS_CONDITIONS')}}
+            {{ t('AGREE_TERMS_CONDITIONS') }}
           </a-checkbox>
         </a-form-item>
 
-        
         <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-          <a-button type="primary" html-type="submit" :loading="isSubmitting" :disabled="isSubmitting">
-  {{ isSubmitting ? 'Παρακαλώ περιμένετε...' : t('SUBMIT') }}
-</a-button>
+          <a-button
+            type="primary"
+            html-type="submit"
+            :loading="isSubmitting"
+            :disabled="isSubmitting"
+          >
+            {{ isSubmitting ? t('PLEASE_WAIT') : t('SUBMIT') }}
+          </a-button>
         </a-form-item>
       </a-form>
     </template>
+
     <template #content v-else>
       <a-result
         status="warning"
-        :title=getDeactiveMessage()
-      >
-      </a-result>
+        :title="t('REGISTER_DEACTIVATED')"
+      />
     </template>
   </Card>
 </template>
+
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  SecurityScanOutlined,
+  SafetyOutlined,
+} from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import Card from '@/components/General/Card.vue';
 import APIController from '@/services/api/API.communicate';
 import { useUserStore } from '@/stores/useUserStore';
-import { UserOutlined, LockOutlined , MailOutlined, SecurityScanOutlined, SafetyOutlined} from "@ant-design/icons-vue";
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-const { t, locale } = useI18n()
+
+declare const grecaptcha: any;
+
+const { t } = useI18n();
 const router = useRouter();
-declare const grecaptcha: any
+const userStore = useUserStore();
+
+const alnumPattern = /^[A-Za-z0-9]+$/;
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const isSubmitting = ref(false);
+const successResponse = ref('');
+const errorResponse = ref('');
+const serverSettings = ref<any>(null);
 
-const userStore = useUserStore();
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
@@ -323,9 +290,18 @@ const formState = reactive({
   termsOfService: false,
 });
 
-const successResponse = ref('');
-const errorResponse = ref('');
-const serverSettings = ref<any>(null);
+const resetForm = () => {
+  formState.login = '';
+  formState.email = '';
+  formState.password = '';
+  formState.repeatPassword = '';
+  formState.real_name = '';
+  formState.social_id = '';
+  formState.question1 = '1';
+  formState.answer1 = '';
+  formState.repeatEmail = '';
+  formState.termsOfService = false;
+};
 
 const onFinish = async () => {
   if (isSubmitting.value) return;
@@ -361,7 +337,7 @@ const onFinish = async () => {
     }
   } catch (error: any) {
     console.log('Register recaptcha frontend error:', error);
-    errorResponse.value = 'Recaptcha failed. Please try again.';
+    errorResponse.value = t('RECAPTCHA_FAILED');
     message.error(errorResponse.value, 30);
     isSubmitting.value = false;
     return;
@@ -373,7 +349,7 @@ const onFinish = async () => {
       recaptchaToken,
     });
 
-    successResponse.value = res.message;
+    successResponse.value = res.message || t('REGISTER_SUCCESS_TITLE');
 
     try {
       const login: any = await APIController.sendRequest('login', 'POST', {
@@ -392,138 +368,81 @@ const onFinish = async () => {
       console.log(error);
     }
 
-    formState.login = '';
-    formState.email = '';
-    formState.password = '';
-    formState.repeatPassword = '';
-    formState.real_name = '';
-    formState.social_id = '';
-    formState.question1 = '1';
-    formState.answer1 = '';
-    formState.repeatEmail = '';
-    formState.termsOfService = false;
+    resetForm();
   } catch (err: any) {
     console.log(err);
-    errorResponse.value = err?.data?.message || 'Register failed.';
+    errorResponse.value = err?.data?.message || t('REGISTER_FAILED');
     message.error(errorResponse.value, 30);
   } finally {
     isSubmitting.value = false;
   }
 };
 
-const checkTermsOfService = (rule: any, value: boolean) => {
+const checkTermsOfService = (_rule: any, value: boolean) => {
   if (!value) {
-    return Promise.reject('Accept our terms of service to create your account');
+    return Promise.reject(t('VALIDATION_TERMS_REQUIRED'));
   }
+
   return Promise.resolve();
 };
-const emailRepeatValidation = (rule: any, value: string) => {
+
+const emailRepeatValidation = (_rule: any, value: string) => {
   if (value !== formState.email) {
-    return Promise.reject("Email and Repeat Email don't match");
+    return Promise.reject(t('VALIDATION_EMAIL_MATCH'));
   }
 
   return Promise.resolve();
 };
 
-async function usernameExistValidation(rule: any, value: string) {
-  return APIController.sendRequest('validation', 'POST', { login: value })
-    .then((res: any) => {
-      if (res.status === 200) {
-        return Promise.resolve();
-      }
-    })
-    .catch((response: any) => {
-      if (response.status !== 200) {
-
-        return Promise.reject(response.data.message);
-      }
-    });
-}
-
-async function emailExistValidation(rule: any, value: string) {
-  return APIController.sendRequest('validation', 'POST', { email: value })
-    .then((res: any) => {
-      if (res.status === 200) {
-        return Promise.resolve();
-      }
-    })
-    .catch((response: any) => {
-      if (response.status !== 200) {
-        console.log(response.data.message);
-
-        return Promise.reject(response.data.message);
-      }
-    });
-}
-
-const passwordRepeatValidation = (rule: any, value: string) => {
+const passwordRepeatValidation = (_rule: any, value: string) => {
   if (value !== formState.password) {
-    return Promise.reject("Password and Repeat Password don't match");
+    return Promise.reject(t('VALIDATION_PASSWORD_MATCH'));
   }
+
   return Promise.resolve();
 };
 
-function getInfoDescription(){
-  return t("REGISTER_INFO_NOTES")
-}
+const usernameExistValidation = async (_rule: any, value: string) => {
+  if (!value) return Promise.resolve();
 
-function getInfoTitle(){
-  return t("REGISTER_INFO_NOTES_TITLE")
-}
+  try {
+    const res: any = await APIController.sendRequest('validation', 'POST', {
+      login: value,
+    });
 
-function getRegisterTitle(){
-  return  t('REGISTER') 
-}
+    if (res.status === true) {
+      return Promise.resolve();
+    }
 
-function getDeactiveMessage(){
-  return t('REGISTER_DEACTIVATED')
-}
+    return Promise.reject(t('ERROR'));
+  } catch (response: any) {
+    return Promise.reject(response?.data?.message || t('ERROR'));
+  }
+};
 
-function getUsername() {
-  return t('REGISTER_USERNAME');
-}
+const emailExistValidation = async (_rule: any, value: string) => {
+  if (!value) return Promise.resolve();
 
-function getRealname() {
-  return t('REGISTER_FIRSTNAME');
-}
+  try {
+    const res: any = await APIController.sendRequest('validation', 'POST', {
+      email: value,
+    });
 
+    if (res.status === true) {
+      return Promise.resolve();
+    }
 
-function getPassword() {
-  return t('REGISTER_PASSWORD');
-}
-
-function getPasswordRepeat() {
-  return t('REGISTER_PASSWORD_REPEAT');
-}
-
-function getEmail() {
-  return t('REGISTER_EMAIL');
-}
-
-function getEmailRepeat() {
-  return t('REGISTER_EMAIL_REPEAT');
-}
-
-function getSecret() {
-  return t('REGISTER_SECRET');
-}
-
-function getSecretAnswer() {
-  return t('REGISTER_SECRET_ANSWER');
-}
-
-function getDeleteCode() {
-  return t('REGISTER_DELETE_CODE');
-}
-
-
+    return Promise.reject(t('ERROR'));
+  } catch (response: any) {
+    return Promise.reject(response?.data?.message || t('ERROR'));
+  }
+};
 
 onMounted(() => {
   APIController.sendRequest('settings-status', 'GET')
     .then((response: any) => {
       serverSettings.value = response;
     })
-    .catch((err) => console.log(err));
+    .catch((err: any) => console.log(err));
 });
-
 </script>

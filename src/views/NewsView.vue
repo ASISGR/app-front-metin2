@@ -1,159 +1,180 @@
 <template>
   <CardPost
-    v-for="(post, index) in posts"
-    :title="post.title"
+    v-for="post in posts"
     :key="post.id"
-    :post="post">
+    :title="post.title"
+    :post="post"
+  >
     <template v-if="userStore?.getUser?.isAdmin" #actions>
       <button @click="showModal(post)">
-        <setting-outlined :style="{ fontSize: '20px' }" />
+        <SettingOutlined :style="{ fontSize: '20px' }" />
       </button>
+
       <button @click="deletePost(post)">
-        <close-outlined :style="{ fontSize: '20px'  }" />
+        <CloseOutlined :style="{ fontSize: '20px' }" />
       </button>
     </template>
+
     <template #content>
-      <p>
-        {{ post.post_content }}
-      </p>
+      <p>{{ post.post_content }}</p>
     </template>
+
     <template #footer>
       <p>
-        Δημοσιεύτηκε: {{ new Date(post.created_at).toLocaleString() }} από τον:
+        {{ t('POST_PUBLISHED') }}:
+        {{ new Date(post.created_at).toLocaleString() }}
+        {{ t('POST_BY_AUTHOR') }}:
         {{ post.author }}
       </p>
     </template>
   </CardPost>
-  <a-modal v-model:open="open" title="Edit Post" @ok="editPost(postToEdit)">
+
+  <a-modal
+    v-model:open="open"
+    :title="t('EDIT_POST')"
+    @ok="editPost(postToEdit)"
+  >
     <a-form
-    :model="postToEdit"
-    name="normal_edit_post"
-    class="edit-form"
-    @finish="editPost(postToEdit)">
-    <a-form-item
-      label="Χαρακτήρας"
-      :name="['author']"
-      :rules="[
-        { required: true, message: 'Please input your author!' },
-        {
-          pattern: /^[A-Za-z0-9\[\]]+$/,
-          message:
-            'Only uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9) are allowed',
-        },
-      ]">
-      <a-select
-        v-model:value="postToEdit.author"
-        placeholder="Επιλέξτε χαρατήρα">
-        <a-select-option v-if="characters.length > 0"
-          v-for="(playerName, index) of characters"
-          :value="playerName"
-          :key="index"
-          >{{ playerName }}</a-select-option
+      v-if="postToEdit"
+      :model="postToEdit"
+      name="normal_edit_post"
+      class="edit-form"
+      @finish="editPost(postToEdit)"
+    >
+      <a-form-item
+        :label="t('CHARACTER')"
+        :name="['author']"
+        :rules="[
+          { required: true, message: t('VALIDATION_AUTHOR_REQUIRED') },
+          { pattern: authorPattern, message: t('VALIDATION_ONLY_ALNUM') },
+        ]"
+      >
+        <a-select
+          v-model:value="postToEdit.author"
+          :placeholder="t('SELECT_CHARACTER')"
         >
-      </a-select>
-    </a-form-item>
-    <a-form-item
-      label="Τίλτος"
-      name="title"
-      :rules="[
-        { required: true, message: 'Please input your title!' },
+          <a-select-option
+            v-for="(playerName, index) in characters"
+            :key="index"
+            :value="playerName"
+          >
+            {{ playerName }}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
 
-      ]">
-      <a-input v-model:value="postToEdit.title"> </a-input>
-    </a-form-item>
+      <a-form-item
+        :label="t('TITLE')"
+        name="title"
+        :rules="[
+          { required: true, message: t('VALIDATION_TITLE_REQUIRED') },
+        ]"
+      >
+        <a-input v-model:value="postToEdit.title" />
+      </a-form-item>
 
-    <a-form-item
-      label="Κείμενο"
-      name="post_content"
-      :rules="[
-        { required: true, message: 'Please input your postContent!' },
- 
-      ]">
-      <a-textarea v-model:value="postToEdit.post_content" />
-    </a-form-item>
-  </a-form>
-
-    </a-modal>
-  
+      <a-form-item
+        :label="t('TEXT')"
+        name="post_content"
+        :rules="[
+          { required: true, message: t('VALIDATION_POST_CONTENT_REQUIRED') },
+        ]"
+      >
+        <a-textarea v-model:value="postToEdit.post_content" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
-  import CardPost from "@/components/General/CardPost.vue";
-  import { ref, onMounted } from "vue";
-  import APIController from "@/services/api/API.communicate";
-  import { SettingOutlined, CloseOutlined } from "@ant-design/icons-vue";
-  import { useUserStore } from "@/stores/useUserStore";
-import { message } from "ant-design-vue";
+import { ref, onMounted } from 'vue';
+import { message } from 'ant-design-vue';
+import { SettingOutlined, CloseOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
 
-  const userStore = useUserStore();
-  interface Post {
-    id: number;
-    title: string;
-    post_content: string;
-    author: string;
-    created_at: Date;
-  }
+import CardPost from '@/components/General/CardPost.vue';
+import APIController from '@/services/api/API.communicate';
+import { useUserStore } from '@/stores/useUserStore';
 
-const posts = ref<Post[]>(null);
+interface Post {
+  id: number;
+  title: string;
+  post_content: string;
+  author: string;
+  created_at: Date;
+}
 
-const open = ref<boolean>(false);
+const { t } = useI18n();
+const userStore = useUserStore();
 
-const postToEdit = ref<Post>(null);
-const characters = ref<String[]>(null);
+const authorPattern = /^[A-Za-z0-9\[\]]+$/;
 
-  onMounted(() => {
-    APIController.sendRequest("posts", "GET")
-      .then((response: any) => {
-        posts.value = response;
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-  });
+const posts = ref<Post[]>([]);
+const open = ref(false);
+const postToEdit = ref<Post | null>(null);
+const characters = ref<any[]>(userStore.getUser?.players || []);
 
-  characters.value = userStore.getUser?.players;
-
-  function editPost(post: Post) {
-    if(!confirm('are you sure?')){
-      return false;
-    }
-    APIController.sendRequest('posts', 'PATCH', {id:post.id, postContent: post.post_content, title: post.title, author: post.author }).then((res:any) => { 
-      message.success(res.message)
-      open.value = false;
-
-     const updatedPost =  posts.value.find((p) => p.id === post.id);
-     updatedPost.author = post.author;
-     updatedPost.title = post.title;
-     updatedPost.post_content = post.post_content;
-
-    }).catch((err: any) => {
-      message.error(err.data.message)
+onMounted(() => {
+  APIController.sendRequest('posts', 'GET')
+    .then((response: any) => {
+      posts.value = response;
     })
-  }
-  function deletePost(post: Post) {
+    .catch((err: any) => {
+      console.log(err);
+    });
+});
 
-    if(!confirm('are you sure?')){
-      return false;
-    }
-    APIController.sendRequest('posts', 'DELETE', post).then((res:any) => { 
-      if(res.success){
-       posts.value =  posts.value.filter((p) => p.id !== post.id)
-       message.success(res.message)
-      }
-    }).catch((err: any) => {
-      message.error(err.data.message)
-
-    })
-  }
-
-  const showModal = (post: Post) => {
-  postToEdit.value = {...post};
+const showModal = (post: Post) => {
+  postToEdit.value = { ...post };
   open.value = true;
 };
 
+const editPost = (post: Post | null) => {
+  if (!post) return;
 
+  if (!confirm(t('CONFIRM_ACTION'))) {
+    return;
+  }
+
+  APIController.sendRequest('posts', 'PATCH', {
+    id: post.id,
+    postContent: post.post_content,
+    title: post.title,
+    author: post.author,
+  })
+    .then((res: any) => {
+      message.success(res.message);
+      open.value = false;
+
+      const updatedPost = posts.value.find((p) => p.id === post.id);
+
+      if (updatedPost) {
+        updatedPost.author = post.author;
+        updatedPost.title = post.title;
+        updatedPost.post_content = post.post_content;
+      }
+    })
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'));
+    });
+};
+
+const deletePost = (post: Post) => {
+  if (!confirm(t('CONFIRM_ACTION'))) {
+    return;
+  }
+
+  APIController.sendRequest('posts', 'DELETE', post)
+    .then((res: any) => {
+      if (res.success) {
+        posts.value = posts.value.filter((p) => p.id !== post.id);
+        message.success(res.message);
+      }
+    })
+    .catch((err: any) => {
+      message.error(err?.data?.message || t('ERROR'));
+    });
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

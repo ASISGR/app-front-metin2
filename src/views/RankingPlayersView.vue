@@ -1,5 +1,5 @@
 <template>
-  <Card title="ΚΑΤΆΤΑΞΗ ΧΑΡΑΚΤΗΡΏΝ">
+  <Card :title="t('CHARACTER_RANKING_TITLE')">
     <template #content>
       <a-pagination
         v-model:current="page"
@@ -8,7 +8,9 @@
         show-less-items
         simple
       />
+
       <br />
+
       <a-table
         :columns="characterTableColumns"
         :data-source="players"
@@ -17,32 +19,26 @@
         :scroll="{ x: true }"
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.title === 'Θέση'">
+          <template v-if="column.key === 'index'">
             <a>
               {{ (paginationData?.currentPage - 1) * 50 + record.index }}
             </a>
           </template>
-          <template v-if="column.title === 'Βασίλειο'">
+
+          <template v-if="column.key === 'playerIndex_empire'">
             <a>
-              
               <img
-                :src="
-                  record.playerIndex_empire === 1
-                    ? redFlag
-                    : record.playerIndex_empire === 2
-                    ? yellowFlag
-                    : record.playerIndex_empire === 3
-                    ? blueFlag
-                    : ''
-                "
-                title="Βασίλειο"
-                alt="Kingdom"
+                :src="getEmpireFlag(record.playerIndex_empire)"
+                :title="t('KINGDOM')"
+                :alt="t('KINGDOM')"
               />
             </a>
           </template>
         </template>
       </a-table>
+
       <br />
+
       <a-pagination
         v-model:current="page"
         :total="paginationData?.totalPlayers"
@@ -55,88 +51,84 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watchEffect } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
 import Card from '@/components/General/Card.vue';
 import API from '@/services/api/API.communicate';
+
 import redFlag from '@/assets/images/empires/1.jpg';
 import yellowFlag from '@/assets/images/empires/2.jpg';
 import blueFlag from '@/assets/images/empires/3.jpg';
-import { useRouter } from 'vue-router';
 
-// Init Variables
-const route = useRouter();
+const { t, locale } = useI18n();
+const router = useRouter();
+
 const players = ref([]);
 const paginationData = ref<any>(null);
-const page = ref<any>(route.currentRoute.value.params.index);
-const characterTableColumns = ref([
-  { title: 'Θέση', key: 'index', dataIndex: 'index' },
-  { title: 'Όνομα', key: 'player_name', dataIndex: 'player_name' },
-  { title: 'Επίπεδο', key: 'player_level', dataIndex: 'player_level' },
+const page = ref<number>(Number(router.currentRoute.value.params.index) || 1);
+
+const characterTableColumns = computed(() => [
+  { title: t('RANK_POSITION'), key: 'index', dataIndex: 'index' },
+  { title: t('NAME'), key: 'player_name', dataIndex: 'player_name' },
+  { title: t('LEVEL'), key: 'player_level', dataIndex: 'player_level' },
   {
-    title: 'Αποστολές',
+    title: t('QUESTS'),
     key: 'highest_collect_quest_lv',
     dataIndex: 'highest_collect_quest_lv',
   },
-  { title: 'Συντεχνία', key: 'playerGuild_name', dataIndex: 'playerGuild_name' },
-  { title: 'Χρόνος παιχνιδιού', key: 'player_playtime', dataIndex: 'player_playtime' },
+  { title: t('GUILD'), key: 'playerGuild_name', dataIndex: 'playerGuild_name' },
+  { title: t('PLAYTIME'), key: 'player_playtime', dataIndex: 'player_playtime' },
   { title: 'EXP', key: 'player_exp', dataIndex: 'player_exp' },
-  { title: 'Βασίλειο', key: 'playerIndex_empire', dataIndex: 'playerIndex_empire' },
+  { title: t('KINGDOM'), key: 'playerIndex_empire', dataIndex: 'playerIndex_empire' },
 ]);
 
-onMounted(() => {
-  // Output value to console
+const getEmpireFlag = (empire: number) => {
+  if (empire === 1) return redFlag;
+  if (empire === 2) return yellowFlag;
+  if (empire === 3) return blueFlag;
 
-  API.sendRequest(
-    `topListPlayers/${route.currentRoute.value.params.index}`,
-    'GET'
-  )
-    .then((response: any) => {
-      players.value = response.players;
-      const fillPagination = {
-        totalPlayers: response.totalPlayers,
-        hasNextPage: response.hasNextPage,
-        hasPreviousPage: response.hasPreviousPage,
-        currentPage: parseInt(response.currentPage),
-        nextPage: response.nextPage,
-        previousPage: response.previousPage,
-        lastPage: response.lastPage,
-      };
-      paginationData.value = fillPagination;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  return '';
+};
+
+const fillPaginationData = (response: any) => {
+  paginationData.value = {
+    totalPlayers: response.totalPlayers,
+    hasNextPage: response.hasNextPage,
+    hasPreviousPage: response.hasPreviousPage,
+    currentPage: Number(response.currentPage),
+    nextPage: response.nextPage,
+    previousPage: response.previousPage,
+    lastPage: response.lastPage,
+  };
+};
+
+const fetchPlayers = async (selectedPage: number) => {
+  try {
+    const response: any = await API.sendRequest(
+      `topListPlayers/${selectedPage}`,
+      'GET'
+    );
+
+    players.value = response.players;
+    fillPaginationData(response);
+  } catch (err: any) {
+    console.log(err);
+  }
+};
+
+onMounted(() => {
+  fetchPlayers(page.value);
 });
 
-watchEffect(() => {
-  // Κάθε φορά που αλλάζει το paginationIndex
-  if (page.value) {
-    page.value = parseInt(page.value)
-    const url = `${window.location.href.split('players')[0]}players/${
-      page.value
-    }`;
+watch(page, (newPage) => {
+  if (!newPage) return;
 
-    history.pushState(null, '', url);
+  page.value = Number(newPage);
 
-    API.sendRequest(`topListPlayers/${page.value}`, 'GET')
-      .then((response: any) => {
-        players.value = response.players;
-
-        const fillPagination = {
-          totalPlayers: response.totalPlayers,
-          hasNextPage: response.hasNextPage,
-          hasPreviousPage: response.hasPreviousPage,
-          currentPage: response.currentPage,
-          nextPage: response.nextPage,
-          previousPage: response.previousPage,
-          lastPage: response.lastPage,
-        };
-        paginationData.value = fillPagination;
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-  }
+  router.push(`/players/${page.value}`);
+  fetchPlayers(page.value);
 });
 </script>
 
