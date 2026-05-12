@@ -8,6 +8,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import Antd from "ant-design-vue";
 import App from "./App.vue";
 import router from "./router";
+import { createHead } from '@unhead/vue'
 
 // languages
 import { LANG_GR } from "./translations/lang-gr.enum";
@@ -15,6 +16,7 @@ import { LANG_US } from "./translations/lang-us.enum";
 import { createI18n } from "vue-i18n";
 
 const app = createApp(App);
+const head = createHead()
 const pinia = createPinia();
 const i18n = createI18n({
   legacy: false,
@@ -31,4 +33,5 @@ app.use(i18n);
 app.use(pinia.use(piniaPluginPersistedstate));
 app.use(router);
 app.use(Antd);
+app.use(head);
 app.mount("#app");

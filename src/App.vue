@@ -53,6 +53,26 @@ import Statistics from './components/Home/Statistics.vue';
 
 import { useGeneralStore } from '@/stores/useGeneralStore';
 import { useUserStore } from '@/stores/useUserStore';
+import { useHead } from '@unhead/vue'
+
+
+useHead({
+  title: 'Reventon Metin2 | Newschool Server',
+  meta: [
+    {
+      name: 'description',
+      content: 'Παίξε στον Reventon Metin2, Newschool private server με PvP, dungeons και events.'
+    },
+    {
+      property: 'og:title',
+      content: 'Reventon Metin2'
+    },
+    {
+      property: 'og:description',
+      content: 'Newschool Metin2 private server με PvP και balanced gameplay.'
+    }
+  ]
+})
 
 const { t, locale } = useI18n();
 const generalStore = useGeneralStore();

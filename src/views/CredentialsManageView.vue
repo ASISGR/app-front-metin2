@@ -13,60 +13,62 @@
           <b>{{ t('CHANGE_LOGIN_PASSWORD_RULES') }}</b>
         </p>
 
+        <p v-if="passwordErrorMessage" class="error-message">
+          {{ passwordErrorMessage }}
+        </p>
+
         <table>
-          <span v-if="passwordErrorMessage" class="error-message">
-            {{ passwordErrorMessage }}
-          </span>
+          <tbody>
+            <tr>
+              <th class="topLine" colspan="2">
+                {{ t('ACCOUNT_PASSWORD') }}
+              </th>
+            </tr>
 
-          <tr>
-            <th class="topLine" colspan="2">
-              {{ t('ACCOUNT_PASSWORD') }}
-            </th>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('OLD_PASSWORD') }}:</th>
+              <td class="tdunkel">
+                <input
+                  v-model="updateCredentials.previousPassword"
+                  type="password"
+                  size="16"
+                  maxlength="16"
+                />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('OLD_PASSWORD') }}:</th>
-            <td class="tdunkel">
-              <input
-                v-model="updateCredentials.previousPassword"
-                type="password"
-                size="16"
-                maxlength="16"
-              />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_PASSWORD') }}:</th>
+              <td class="tdunkel">
+                <input
+                  v-model="updateCredentials.updatePassword"
+                  type="password"
+                  size="16"
+                  maxlength="16"
+                />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_PASSWORD') }}:</th>
-            <td class="tdunkel">
-              <input
-                v-model="updateCredentials.updatePassword"
-                type="password"
-                size="16"
-                maxlength="16"
-              />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_PASSWORD_CONFIRM') }}:</th>
+              <td class="tdunkel">
+                <input
+                  v-model="verifyPassword"
+                  type="password"
+                  size="16"
+                  maxlength="16"
+                />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_PASSWORD_CONFIRM') }}:</th>
-            <td class="tdunkel">
-              <input
-                v-model="verifyPassword"
-                type="password"
-                size="16"
-                maxlength="16"
-              />
-            </td>
-          </tr>
-
-          <tr>
-            <th class="topLine" style="text-align: center" colspan="2">
-              <button type="submit" name="submit">
-                {{ t('CHANGE_LOGIN_PASSWORD') }}
-              </button>
-            </th>
-          </tr>
+            <tr>
+              <th class="topLine" style="text-align: center" colspan="2">
+                <button type="submit" name="submit">
+                  {{ t('CHANGE_LOGIN_PASSWORD') }}
+                </button>
+              </th>
+            </tr>
+          </tbody>
         </table>
       </form>
     </div>
@@ -79,40 +81,42 @@
         </p>
 
         <table>
-          <tr>
-            <th class="topLine" colspan="2">
-              {{ t('SAFEBOX_PASSWORD') }}
-            </th>
-          </tr>
+          <tbody>
+            <tr>
+              <th class="topLine" colspan="2">
+                {{ t('SAFEBOX_PASSWORD') }}
+              </th>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('OLD_PASSWORD') }}:</th>
-            <td class="tdunkel">
-              <input type="password" size="6" maxlength="6" />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('OLD_PASSWORD') }}:</th>
+              <td class="tdunkel">
+                <input type="password" size="6" maxlength="6" />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_PASSWORD') }}:</th>
-            <td class="tdunkel">
-              <input type="password" size="6" maxlength="6" />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_PASSWORD') }}:</th>
+              <td class="tdunkel">
+                <input type="password" size="6" maxlength="6" />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_PASSWORD_CONFIRM') }}:</th>
-            <td class="tdunkel">
-              <input type="password" size="6" maxlength="6" />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_PASSWORD_CONFIRM') }}:</th>
+              <td class="tdunkel">
+                <input type="password" size="6" maxlength="6" />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine" style="text-align: center" colspan="2">
-              <button type="submit" name="submit">
-                {{ t('CHANGE_SAFEBOX_PASSWORD') }}
-              </button>
-            </th>
-          </tr>
+            <tr>
+              <th class="topLine" style="text-align: center" colspan="2">
+                <button type="submit" name="submit">
+                  {{ t('CHANGE_SAFEBOX_PASSWORD') }}
+                </button>
+              </th>
+            </tr>
+          </tbody>
         </table>
       </form>
     </div>
@@ -122,57 +126,59 @@
         <p>{{ t('CHANGE_SECRET_QUESTION_INFO') }}</p>
 
         <table>
-          <tr>
-            <th class="topLine" colspan="2">
-              {{ t('ACCOUNT_SECURITY') }}
-            </th>
-          </tr>
+          <tbody>
+            <tr>
+              <th class="topLine" colspan="2">
+                {{ t('ACCOUNT_SECURITY') }}
+              </th>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('PREVIOUS_SECRET_QUESTION') }}:</th>
-            <td class="tdunkel">
-              <select required>
-                <option value="1">{{ t('SECRET_MOTHER_NAME') }}</option>
-                <option value="2">{{ t('SECRET_FAVORITE_CITY') }}</option>
-                <option value="3">{{ t('SECRET_PET_NAME') }}</option>
-                <option value="4">{{ t('SECRET_FAVORITE_HERO') }}</option>
-              </select>
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('PREVIOUS_SECRET_QUESTION') }}:</th>
+              <td class="tdunkel">
+                <select required>
+                  <option value="1">{{ t('SECRET_MOTHER_NAME') }}</option>
+                  <option value="2">{{ t('SECRET_FAVORITE_CITY') }}</option>
+                  <option value="3">{{ t('SECRET_PET_NAME') }}</option>
+                  <option value="4">{{ t('SECRET_FAVORITE_HERO') }}</option>
+                </select>
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('PREVIOUS_SECRET_ANSWER') }}:</th>
-            <td class="tdunkel">
-              <input type="password" name="opass" size="16" maxlength="16" />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('PREVIOUS_SECRET_ANSWER') }}:</th>
+              <td class="tdunkel">
+                <input type="password" name="opass" size="16" maxlength="16" />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_SECRET_QUESTION') }}:</th>
-            <td class="tdunkel">
-              <select required>
-                <option value="1">{{ t('SECRET_MOTHER_NAME') }}</option>
-                <option value="2">{{ t('SECRET_FAVORITE_CITY') }}</option>
-                <option value="3">{{ t('SECRET_PET_NAME') }}</option>
-                <option value="4">{{ t('SECRET_FAVORITE_HERO') }}</option>
-              </select>
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_SECRET_QUESTION') }}:</th>
+              <td class="tdunkel">
+                <select required>
+                  <option value="1">{{ t('SECRET_MOTHER_NAME') }}</option>
+                  <option value="2">{{ t('SECRET_FAVORITE_CITY') }}</option>
+                  <option value="3">{{ t('SECRET_PET_NAME') }}</option>
+                  <option value="4">{{ t('SECRET_FAVORITE_HERO') }}</option>
+                </select>
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine">{{ t('NEW_SECRET_ANSWER') }}:</th>
-            <td class="tdunkel">
-              <input type="password" name="opass" size="16" maxlength="16" />
-            </td>
-          </tr>
+            <tr>
+              <th class="topLine">{{ t('NEW_SECRET_ANSWER') }}:</th>
+              <td class="tdunkel">
+                <input type="password" name="opass" size="16" maxlength="16" />
+              </td>
+            </tr>
 
-          <tr>
-            <th class="topLine" style="text-align: center" colspan="2">
-              <button type="submit" name="submit">
-                {{ t('CHANGE_ACCOUNT_SECURITY') }}
-              </button>
-            </th>
-          </tr>
+            <tr>
+              <th class="topLine" style="text-align: center" colspan="2">
+                <button type="submit" name="submit">
+                  {{ t('CHANGE_ACCOUNT_SECURITY') }}
+                </button>
+              </th>
+            </tr>
+          </tbody>
         </table>
       </form>
     </div>
@@ -238,7 +244,6 @@ watchEffect(() => {
   color: #cc0033;
   font-size: 12px;
   line-height: 15px;
-  margin: 5px 0 0;
-  align-self: flex-end;
+  margin: 5px 0 10px;
 }
 </style>
